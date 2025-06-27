@@ -439,7 +439,13 @@ echo -e "\n\nTotalseconds: $SECONDS\n"
         <xsl:if test="ancestor::sect1[@id='ch-bootable-kernel']">
           <xsl:text>cp -v ../kernel-config .config&#xA;</xsl:text>
           <xsl:text>timeout 60 make oldconfig ||\&#xA;</xsl:text>
-          <xsl:text>{ echo kernel config is not up to date; exit 124; }&#xA;</xsl:text>
+          <xsl:text>{ echo kernel config is not complete and cannot be used\!
+echo You should enter chroot '("make -C &lt;build_dir&gt;/jhalfs chroot")'
+echo then run '"make oldconfig" in /sources/linux-&lt;version&gt;,'
+echo answer the questions, and save the resulting configuration,
+echo then copy the resulting .config to /sources/kernel-config,
+echo exit chroot and restart the build.
+exit 124; }&#xA;</xsl:text>
         </xsl:if>
       </xsl:when>
 <!-- test instructions -->
