@@ -29,7 +29,7 @@ inline_doc
   local -r   LFS_book="$BOOK_common INITSYS BLFS_TOOL"
 
   # Build Settings by book
-  local -r   LFS_build="$BUILD_chroot NCURSES5 $BUILD_common KEEPDIR PKGMNGT FULL_LOCALE WRAP_INSTALL"
+  local -r   LFS_build="$BUILD_chroot NCURSES5 $BUILD_common KEEPDIR TEST_MISMATCH PKGMNGT FULL_LOCALE WRAP_INSTALL"
 
   # System Settings by book
   local -r LFS_system="HOSTNAME INTERFACE IP_ADDR GATEWAY PREFIX BROADCAST DOMAIN DNS1 DNS2 FONT KEYMAP LOCAL LOG_LEVEL"
