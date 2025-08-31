@@ -185,12 +185,10 @@ if [[ "${NO_PROGRESS_BAR}" = "y" ]] ; then
 fi
 
 # The next variable is passed to the xsl stylesheet to tell whether we want
-# to test a mismatch between the version and the directory name. it is
-# the negation of GETPKG, because if we get the source files, we test
-# the mismatch between directory name and version when receiving the file.
-TEST_MISMATCH=y
-# TODO: add TEST_MISMATCH to Config.in
-#if [ "$GETPKG" = y ]; then TEST_MISMATCH=n; fi
+# to test a mismatch between the version and the directory name.
+TEST_MISMATCH=${TEST_MISMATCH:=n}
+# Note that this test could be done when downloading packages, but this
+# would add bzip2 as a prerequisite of jhalfs...
 
 # Sanity check on the location of $BUILDDIR / $JHALFSDIR
 CWD="$(cd "$(dirname "$0")" && pwd)"
