@@ -581,6 +581,17 @@ depends on !BOOK_BLFS
             This is for being able to debug failed tests or other non
             fatal failures. But mhis lay consume a lot of disk space.
     #--- End Keep dirs in chapter eight
+    #
+    #--- Test mismatch between dirname version and package version
+    config TEST_MISMATCH
+        bool     "Test mismatch beween package version and directory name"
+        default y
+        help
+            If you check this option, the version of the extracted
+            directory name will be compared to the package version,
+            and a mismatch will abort the build. This is of almost
+            no use if you are not an editor of the book.
+    #--- End Test mismatch
 
     #--- Package Management
     config  PKGMNGT
