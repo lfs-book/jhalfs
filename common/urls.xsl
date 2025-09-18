@@ -12,8 +12,9 @@
   <xsl:param name="revision" select="'sysv'"/>
 
   <xsl:template match="/">
-    <xsl:apply-templates select="//varlistentry[@revision=$revision
-                                                or not(@revision)]//ulink"/>
+    <xsl:apply-templates
+      select="//varlistentry[@revision=$revision
+                             or not(@revision)]/listitem/para/ulink"/>
     <xsl:if test="$pkgmngt='y'">
       <xsl:apply-templates
         select="document('packageManager.xml')//ulink"/>
