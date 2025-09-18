@@ -81,8 +81,8 @@ get_sources() {              # Download file, write name to MISSING_FILES.DMP if
 
     # Deal with bootscripts md5sum issue,
     # or skip if it is a custom patch without md5
-    [ $BOOKMD5 = "BOOTSCRIPTS-MD5SUM"  ] && continue
-    [ $BOOKMD5 = "CUSTOM-PATCH-MD5SUM" ] && continue
+    [ "$BOOKMD5" = "BOOTSCRIPTS-MD5SUM"  ] && continue
+    [ "$BOOKMD5" = "CUSTOM-PATCH-MD5SUM" ] && continue
 
       # IF the md5sum does not match
     if ! echo "$MD5" | md5sum -c - >/dev/null ; then
