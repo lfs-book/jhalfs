@@ -432,7 +432,8 @@ depends on !BOOK_BLFS
         depends on GETPKG
         help
            Name of a mirror for ftp.gnu.org. This should be the url up
-           to and not including "/gnu"
+           to and not including "/gnu", and not including https://
+           Example: ftp.nluug.nl/pub
 
     config RETRYSRCDOWNLOAD
         bool "Retry on 'connection refused' failure"
