@@ -18,6 +18,7 @@ inline_doc
   # Common settings by Config.in sections and books family
   local -r     BOOK_common="COMMIT BOOK CUSTOM_TOOLS"
   local -r  GENERAL_common="LUSER LGROUP LHOME BUILDDIR CLEAN GETPKG SRC_ARCHIVE \
+                            GNU_REPLACE \
                             RETRYSRCDOWNLOAD RETRYDOWNLOADCNT DOWNLOADTIMEOUT \
                             RUNMAKE"
   local -r    BUILD_chroot="TEST STRIP"
