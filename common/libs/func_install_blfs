@@ -153,6 +153,10 @@ yes "yes" | $BUILDDIR$BLFS_ROOT/gen_pkg_book.sh        \
                     $BUILDDIR$TRACKING_DIR/instpkg.xml \
                     $BUILDDIR$BLFS_ROOT
 
+# change ftp.gnu.org server in scripts
+for script in scripts/*
+   do sed -i s@ftp.gnu.org@"$GNU_REPLACE"@ $script
+done
 # Move the scriptlets where they should be
 sudo rm -rf $BUILDDIR$BLFS_ROOT/scripts
 mv scripts $BUILDDIR$BLFS_ROOT
