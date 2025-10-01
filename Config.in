@@ -426,6 +426,14 @@ depends on !BOOK_BLFS
             #   Any missing file will be downloaded and archived here,
             #   if the user has the right privileges.
 
+    config GNU_REPLACE
+        string "Replacement for ftp.gnu.org"
+        default "ftp.gnu.org"
+        depends on GETPKG
+        help
+           Name of a mirror for ftp.gnu.org. This should be the url up
+           to and not including "/gnu"
+
     config RETRYSRCDOWNLOAD
         bool "Retry on 'connection refused' failure"
         default n
