@@ -167,6 +167,8 @@ create_urls() {              #
 
   cd $BUILDDIR/sources
 
+  sed -i s@ftp.gnu.org@"$GNU_REPLACE"@ urls.lst
+
   if [[ "${CUSTOM_TOOLS}" = "y" ]]; then
     add_CustomToolsURLS
   fi
