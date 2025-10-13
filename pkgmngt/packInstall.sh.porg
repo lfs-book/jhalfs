@@ -77,7 +77,7 @@ case $1 in
     local PACKENT=$(dirname $JH_PACK_INSTALL)/blfs-xml/packages.ent
     VERSION=$(sed -n 's/.*x265[^0-9]*\([^"]*\).*/\1/p' $PACKENT)
     ;;
-  libuv*|Test-MockModule*|upower*|xdg-utils*|iso-codes*) # can contain -vd.d or just -d.d
+  libuv*|Test-MockModule*|upower*|xdg-utils*|iso-codes*|SVT-AV1*|xdg-user-dirs*) # can contain -vd.d or just -d.d
     VERSION=$(echo $1 | sed 's/^.*[v-]//')
     ;;
   junit*|inih*) # can contain -rd.d or just -d.d
