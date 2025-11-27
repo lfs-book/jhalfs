@@ -401,6 +401,10 @@ for node in $(grep -l ' a ' *.dep); do
   } <$node
   for id_of_dep in $lines_to_remove; do
     sed "/a\ $id_of_dep\$/d" -i $node
+    # if a runtime dependency is required or recommended, it means it should
+    # be installed when running the tests. Normally, test dependencies are
+    # optional, so add an optional "before" dep here
+    sed "\$a3 b $id_of_dep" -i $node
   done
 done
 for node in $(grep -l ' f ' *.dep); do
