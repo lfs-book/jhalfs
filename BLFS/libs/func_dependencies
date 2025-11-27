@@ -354,6 +354,7 @@ local start
 local seen
 
 for node in $(ls *.dep); do
+  cp $node ${node%.dep}.orig
   if test $node = root.dep; then continue; fi
   echo Cleaning $node
   lines_to_remove=
@@ -374,7 +375,7 @@ for node in $(grep -l ' a ' *.dep); do
   echo Process "runtime" deps in $node
   if ! [ -e ${node%.dep}groupxx.dep ]; then
     b=0 # Nothing depends on <node>groupxx
-    for parent in $(grep -l ${node%.dep}\$ *); do
+    for parent in $(grep -l ${node%.dep}\$ *.dep); do
       p=0 # No "after" dependency depends on this parent
       for start in $(grep ' a ' $node | cut -d' ' -f3); do
         seen=" " # global variable used in "path_to"
@@ -402,7 +403,7 @@ for node in $(grep -l ' a ' *.dep); do
     sed "/a\ $id_of_dep\$/d" -i $node
   done
 done
-for node in $(grep -l ' f ' *); do
+for node in $(grep -l ' f ' *.dep); do
   echo Process "first" deps in $node
   lines_to_change=
   {
