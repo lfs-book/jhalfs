@@ -307,6 +307,11 @@ if [ -n "$DEP_CHECK" ]; then
       printf "         shoud be selected. Not generating check code.\n"
       exit
    fi
+   if ! porg -h >/dev/null 2>&1; then
+      printf "\nWARNING: program porg not found.\n"
+      printf "         Not generating check code.\n"
+      exit
+   fi
 
    LIST_LFS="$(xsltproc $ListLFS $LFS_FULL)"
    LIST_NEEDED="$(echo $FULL_LIST)"
