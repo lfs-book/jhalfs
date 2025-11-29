@@ -314,7 +314,7 @@ if [ -n "$DEP_CHECK" ]; then
    fi
 
    LIST_LFS=" $(xsltproc $ListLFS $LFS_FULL) "
-   LIST_NEEDED=" $(echo $FULL_LIST) "
+   LIST_NEEDED=" $(echo ${FULL_LIST,,}) "
    LIST_INSTALLED="$(porg -a | sed 's/-[[:digit:]].*//')"
    LIST_UNNEEDED=
    for p in $LIST_INSTALLED; do
