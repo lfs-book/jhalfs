@@ -7,6 +7,10 @@
               encoding='ISO-8859-1'/>
 
   <xsl:template match="/">
+    <xsl:text>config MODULES
+    bool
+    default y
+</xsl:text>
     <xsl:apply-templates select="//list"/>
     <xsl:text>comment ""
 
@@ -204,14 +208,13 @@ endmenu
       <xsl:text>menuconfig&#9;MENU_</xsl:text>
       <xsl:value-of select="@id"/>
       <xsl:text>
-bool&#9;"</xsl:text>
+tristate&#9;"</xsl:text>
       <xsl:value-of select="name"/>
       <xsl:text>"
-default&#9;n
 
 if&#9;MENU_</xsl:text>
       <xsl:value-of select="@id"/>
-      <xsl:text>
+      <xsl:text> != n
 
 </xsl:text>
       <xsl:apply-templates select="sublist"/>
@@ -229,14 +232,16 @@ if&#9;MENU_</xsl:text>
       <xsl:text>&#9;menuconfig&#9;MENU_</xsl:text>
       <xsl:value-of select="@id"/>
       <xsl:text>
-&#9;bool&#9;"</xsl:text>
+&#9;tristate&#9;"</xsl:text>
       <xsl:value-of select="name"/>
       <xsl:text>"
-&#9;default&#9;n
+&#9;&#9;default&#9;y if MENU_</xsl:text>
+      <xsl:value-of select="../@id"/>
+      <xsl:text> = y
 
 &#9;if&#9;MENU_</xsl:text>
       <xsl:value-of select="@id"/>
-      <xsl:text>
+      <xsl:text> != n
 
 </xsl:text>
       <xsl:apply-templates select="package"/>
@@ -263,7 +268,9 @@ if&#9;MENU_</xsl:text>
         <xsl:text>]</xsl:text>
       </xsl:if>
       <xsl:text>"
-&#9;&#9;default&#9;n
+&#9;&#9;default&#9;y if MENU_</xsl:text>
+      <xsl:value-of select="../@id"/>
+      <xsl:text> = y
 
 </xsl:text>
     </xsl:if>
@@ -273,14 +280,16 @@ if&#9;MENU_</xsl:text>
       <xsl:text>&#9;&#9;menuconfig&#9;MENU_</xsl:text>
       <xsl:value-of select="translate(name,' ()','___')"/>
       <xsl:text>
-&#9;&#9;bool&#9;"</xsl:text>
+&#9;&#9;tristate&#9;"</xsl:text>
       <xsl:value-of select="name"/>
       <xsl:text>"
-&#9;&#9;default&#9;n
+&#9;&#9;default&#9;y if MENU_</xsl:text>
+      <xsl:value-of select="../@id"/>
+      <xsl:text> = y
 
 &#9;&#9;if&#9;MENU_</xsl:text>
       <xsl:value-of select="translate(name,' ()','___')"/>
-      <xsl:text>
+      <xsl:text> !=n
 
 </xsl:text>
       <xsl:apply-templates select="module"/>
@@ -307,23 +316,11 @@ if&#9;MENU_</xsl:text>
         <xsl:text>]</xsl:text>
       </xsl:if>
       <xsl:text>"
-&#9;&#9;&#9;default&#9;</xsl:text>
-      <xsl:choose>
-      <!-- for compound packages, default to selecting all the subpackages-->
-        <xsl:when test="contains(../name,'xorg') or
-                        contains(../name,'plasma') or
-                        contains(../name,'kf6') or
-                        contains(../name,'xcb-utilities')">
-          <xsl:text>y
+&#9;&#9;&#9;default&#9; y if MENU_</xsl:text>
+      <xsl:value-of select="translate(../name,' ()','___')"/>
+      <xsl:text> = y
 
 </xsl:text>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:text>n
-
-</xsl:text>
-        </xsl:otherwise>
-      </xsl:choose>
     </xsl:if>
   </xsl:template>
 
