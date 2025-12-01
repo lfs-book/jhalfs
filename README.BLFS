@@ -64,24 +64,23 @@
       the bash shell startup files (as per `3. After LFS Configuration
       Issues' of the BLFS book), as some instructions in BLFS rely on
       their being present.
-    - At this point, the tool has no way to know which versions of LFS packages
-      are installed, so that the menu interface will show all the LFS packages,
-      as if they were not installed. If you have a released version of LFS, or
-      the date of your GIT version of LFS is known, you should run the
-      update-lfs.sh script. If you have updated some
-      LFS packages since first installation, or have been using a custom
-      working copy of the LFS book, the only (tedious) way is to create
-      empty files with names <package>-<installed-version> in the tracking
-      directory, and run the tool.
-
-    - If you have also installed some BLFS packages, they are not in the
-      tracking file. The only way is to create empty files with names
-      <package>-<installed-version> in the tracking directory, and run the tool.
+    - At this point, the tool has no way to know which versions of {B}LFS
+      packages are installed, so that the menu interface will show all the
+      packages, as if they were not installed.
+      You can make them known to the system by running the
+      update-installed.sh script and entering the installed packages with
+      their version in the menu. Note that normally all LFS packages are
+      supposed to be installed, and you can use <A> in the menu tick box
+      to select them all.
+    - Another way to make the system aware of installed packages is to
+      create empty files with names <package>-<installed-version> in the
+      tracking directory, and run the tool. This may be convenient for
+      just a few packages.
 
   3.2 INSTALLATION ON A JUST BUILT LFS SYSTEM
 
-    For books that support it (only LFS),
-  there is an option to install the BLFS tools right after building
+  When running the LFS menu, there is an option to install the BLFS tools
+  right after building
   the LFS system: just tick `BOOK Settings/Add blfs-tool support' in
   jhalfs configuration menu. The tools are installed in $BLFS_ROOT
   (default /blfs_root) on the LFS system, and the dependencies are built
@@ -108,12 +107,30 @@
       the tool in this case, and there is no need to run the update-lfs.sh
       script.
 
-     We assume that the BLFS tools will be used on a booted LFS system.
+  We assume that the BLFS tools will be used on a booted LFS system.
   Using them to build BLFS packages in a chroot jail is also possible,
   but not supported.
 
   3.3 DIRECTORY LAYOUT IN THE $BLFS_ROOT DIRECTORY
 
+    README.BLFS                 this file
+    TODO                        developers notes (well, not updated often)
+    blfs-menu.patch             patch for menu/menuconfig.py to display more
+                                explicit letters for menus
+    gen_pkg_book.sh             resolves dependencies, generates a linear BLFS
+                                book, and finally generates build scripts
+    gen-makefile.sh             generates the target Makefile
+    progress_bar.sh             the target Makefile progress bar
+    gen-special.sh              Helper script for generating the package
+                                database
+    Makefile                    Used by make to update the package database
+                                from the GIT tree, then launch the menuconfig
+                                interface, and run gen_pkg_book.sh based on
+                                configuration settings
+    packdesc.dtd                a simple DTD describing the format of the
+                                package database and the tracking file
+    update-installed.sh         Run it to update the installed packages
+                                database without updating them
     blfs-xml/*                  GIT tree of the selected BLFS book version
     lfs-xml/*                   GIT tree of the selected LFS book version
     lib/constants.inc           functions libraries
@@ -122,6 +139,9 @@
     xsl/gen_pkg_list.xsl        XSL stylesheet to generate the package database
        /gen_config.xsl          XSL stylesheet to generate the Config.in file
                                 for use in the menuconfig system
+       /gen_newpack.xsl         XSL stylesheet to generate the newpack.in file
+                                for use in the menuconfig system, when updating
+                                installed packages
        /dependencies.xsl        XSL stylesheet to generate the dependency list
                                 of a package
        /make_book.xsl           XSL stylesheet to generate the linear book.xml
@@ -135,20 +155,6 @@
        /process-replaceable.xsl XSL stylesheet included by scripts.xsl, for
                                 generating correct instructions when a
                                 <replaceable> tag is encountered.
-    README.BLFS                 this file
-    TODO                        developers notes (well, not updated often)
-    gen_pkg_book.sh             resolves dependencies, generates a linear BLFS
-                                book, and finally generates build scripts
-    gen-makefile.sh             generates the target Makefile
-    progress_bar.sh             the target Makefile progress bar
-    gen-special.sh              Helper script for generating the package
-                                database
-    Makefile                    Used by make to update the package database
-                                from the GIT tree, then launch the menuconfig
-                                interface, and run gen_pkg_book.sh based on
-                                configuration settings
-    packdesc.dtd                a simple DTD describing the format of the
-                                package database and the tracking file.
 
   Working files: several files are generated when first running the tool:
 
@@ -215,13 +221,15 @@
        In the package selection block, menus and submenus are organized
     as the book's parts, chapters and sections. You can navigate those menus
     and select as many targets as you want. But we suggest to not select
-    too many at a time to be able to sort issues!
+    too many at a time to be able to sort issues! Note that all the packages
+    under a submenu may be selected at once when "<A>" is selected in the
+    tick box.
 
        In the "Build settings" submenu, the dependency level and default
     packages used to solve alternatives are set (currently, only for the MTA).
     You can also select whether the build will be made as a normal user or as
     root, whether to use "porg style" package management, whether to remove
-    ".la" files, and wheter statistics for the package are generated (build
+    ".la" files, and whether statistics for the package are generated (build
     time, memory footprint and "DESTDIR" install). If you use package
     management, you have to enter the path to the packInstall.sh script too.
 
