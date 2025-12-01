@@ -23,6 +23,11 @@ fi
 sed -i s@tracking-dir@$TRACKING_DIR@ \
     ${BUILDDIR}${BLFS_ROOT}/{Makefile,gen-makefile.sh,gen_pkg_book.sh}
 
+# Fix menuconfig.py for blfs
+pushd ${BUILDDIR}${BLFS_ROOT} >/dev/null
+patch menu/menuconfig.py blfs-menu.patch
+popd
+
 # If we have a working copy, copy it:
 if [[ "$BLFS_WORKING_COPY" = "y" ]]; then
 echo "copying the local BLFS working copy (may take some time)"

@@ -1,0 +1,18 @@
+--- menu/menuconfig.py	2025-11-29 10:42:29.881000000 +0100
++++ /home/pierre/blfs_root/menu/menuconfig.py	2025-11-30 10:12:01.489595958 +0100
+@@ -3071,13 +3071,14 @@
+     if _is_y_mode_choice_sym(item):
+         return "(X)" if item.choice.selection is item else "( )"
+ 
+-    tri_val_str = (" ", "M", "*")[item.tri_value]
++    tri_val_str = (" ", "*", "A")[item.tri_value]
+ 
+     if len(item.assignable) <= 1:
+         # Pinned to a single value
+         return "" if isinstance(item, Choice) else "-{}-".format(tri_val_str)
+ 
+     if item.type == BOOL:
++        tri_val_str = (" ", "M", "*")[item.tri_value]
+         return "[{}]".format(tri_val_str)
+ 
+     # item.type == TRISTATE

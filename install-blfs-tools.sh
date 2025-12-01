@@ -150,6 +150,11 @@ rm -rf ${BUILDDIR}${BLFS_ROOT}/$LFS_XML
 sed -i s@tracking-dir@$TRACKING_DIR@ \
     ${BUILDDIR}${BLFS_ROOT}/{Makefile,gen-makefile.sh,gen_pkg_book.sh}
 
+# Fix menuconfig for BLFS
+pushd ${BUILDDIR}${BLFS_ROOT}/menu
+patch menuconfig.py ../blfs-menu.patch
+popd
+
 # Ensures the tracking directory exists.
 # Throws an error if it does not exist and the user does not
 # have write permission to create it.
