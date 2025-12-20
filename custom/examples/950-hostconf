@@ -1,0 +1,31 @@
+# This is a template for configuring the BLFS tools for a regular
+# user, after installing LFS. Edit and replace the fields between angle
+# brackets <..>
+#
+
+PKG=""
+PKG_VERSION=""
+PKG_FILE=""
+URL=""
+MD5=""
+for i in PATCH{1..10}; do
+   unset $i
+done
+PATCH1=""
+
+( cat << "xEOFx"
+# Replace <user info> with anything qualifying the user (usually firstname and
+# lastname), and <username> with the login name of the user.
+useradd -m -c '<user info>' <username>
+mv /blfs_root /home/<username>
+chown -R <username>:<username> /home/<username>/blfs_root
+chown -R <username>:<username> /var/lib/jhalfs/BLFS
+chown -R <username>:<username> /sources
+sed -i "s@/blfs_root@/home/<username>&@" /home/<username>/blfs_root/configuration
+sed -i "/SUDO/s/.*/SUDO=y/" /home/<username>/blfs_root/configuration
+sed -i "s@/blfs_root@/home/<username>&@" /home/<username>/blfs_root/packages.xml
+sed -i "s@/blfs_root@/home/<username>&@" /var/lib/jhalfs/BLFS/instpkg.xml
+echo <username> ALL=\(ALL:ALL\) NOPASSWD: ALL >/etc/sudoers.d/10-<username>
+chmod o-rw /etc/sudoers.d/10-<username>
+xEOFx
+) > tmp
