@@ -302,7 +302,14 @@ EOF
 
 .NOTPARALLEL:
 
-all:	ck_UID ck_terminal ck_mountpoint mk_SETUP mk_LUSER mk_SUDO mk_CHROOT mk_BOOT create-sbu_du-report mk_BLFS_TOOL mk_CUSTOM_TOOLS
+all:	ck_UID ck_terminal ck_mountpoint mk_SETUP mk_LUSER mk_SUDO mk_CHROOT mk_BOOT create-sbu_du-report
+ifeq (\$(ADD_BLFS_TOOLS),y)
+  all:    mk_BLFS_TOOL
+endif
+ifeq (\$(ADD_CUSTOM_TOOLS),y)
+  all:    mk_CUSTOM_TOOLS
+endif
+all:
 	@sudo env LFS=\$(MOUNT_PT) kernfs-scripts/teardown.sh
 EOF
 ) >> $MKFILE
@@ -387,20 +394,23 @@ mk_BOOT: mk_CHROOT | devices
 	@( sudo \$(CHROOT1) -c "cd \$(SCRIPT_ROOT) && make BREAKPOINT=\$(BREAKPOINT) BOOT")
 	@touch \$@
 
+ifeq (\$(ADD_BLFS_TOOLS),y)
 mk_BLFS_TOOL: create-sbu_du-report | devices
-	@if [ "\$(ADD_BLFS_TOOLS)" = "y" ]; then \\
-	  \$(call sh_echo_PHASE,Building BLFS_TOOL); \\
-	  (sudo \$(CHROOT1) -c "make -C $BLFS_ROOT/work"); \\
-	fi;
+	@\$(call sh_echo_PHASE,Building BLFS_TOOL)
+	@sudo \$(CHROOT1) -c "make -C $BLFS_ROOT/work"
 	@touch \$@
-
+endif
+ifeq (\$(ADD_CUSTOM_TOOLS),y)
+ifeq (\$(ADD_BLFS_TOOLS),y)
 mk_CUSTOM_TOOLS: mk_BLFS_TOOL | devices
-	@if [ "\$(ADD_CUSTOM_TOOLS)" = "y" ]; then \\
-	  \$(call sh_echo_PHASE,Building CUSTOM_TOOLS); \\
-	  sudo mkdir -p ${BUILDDIR}${TRACKING_DIR}; \\
-	  (sudo \$(CHROOT1) -c "cd \$(SCRIPT_ROOT) && make BREAKPOINT=\$(BREAKPOINT) CUSTOM_TOOLS"); \\
-	fi;
+else
+mk_CUSTOM_TOOLS: create-sbu_du-report | devices
+endif
+	@\$(call sh_echo_PHASE,Building CUSTOM_TOOLS)
+	@sudo mkdir -p ${BUILDDIR}${TRACKING_DIR}
+	@sudo \$(CHROOT1) -c "cd \$(SCRIPT_ROOT) && make BREAKPOINT=\$(BREAKPOINT) CUSTOM_TOOLS"
 	@touch \$@
+endif
 
 devices: ck_UID
 	sudo env LFS=\$(MOUNT_PT) kernfs-scripts/devices.sh
