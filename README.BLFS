@@ -47,7 +47,7 @@
      There are two ways to install the BLFS tools on an LFS system, described
   in paragraphs 3.1 and 3.2, respectively:
 
-  3.1 INSTALLATION ON A RUNNING SYSTEM
+  3.1 INSTALLATION ON A RUNNING LFS SYSTEM
 
      Select "Use Book --> Beyond Linux From Scratch" in the jhalfs menu:
   The tools are installed in $HOME$BLFS_ROOT (the default for $BLFS_ROOT
@@ -59,11 +59,13 @@
     - or that it is writable by the user running "make", if it exists.
 
   After the intallation, you should perform the following additional steps:
-    - Configure sudo, adding the needed privileges for the user.
+    - Configure sudo, adding the needed privileges for the user (a possible
+      /etc/sudoers entry is given in README).
     - Although it is not strictly necessary, it is recommended to install
       the bash shell startup files (as per `3. After LFS Configuration
       Issues' of the BLFS book), as some instructions in BLFS rely on
-      their being present.
+      their being present. Note that they can be installed using the tool
+      by selecting them in the menu.
     - At this point, the tool has no way to know which versions of {B}LFS
       packages are installed, so that the menu interface will show all the
       packages, as if they were not installed.
@@ -77,7 +79,7 @@
       tracking directory, and run the tool. This may be convenient for
       just a few packages.
 
-  3.2 INSTALLATION ON A JUST BUILT LFS SYSTEM
+  3.2 INSTALLATION WHEN BUILDING LFS
 
   When running the LFS menu, there is an option to install the BLFS tools
   right after building
@@ -87,7 +89,9 @@
   at the end of the jhalfs run, before the custom tools.
 
   After booting the new LFS system some steps are needed to finish
-  the installation of the automated tools:
+  the installation of the automated tools (a custom tool example
+  "950-userconf" in custom/examples allows to perform all the steps until
+  the setting of /etc/sudoers):
 
     - A user account must be created. You must be logged on that user
       account to use blfs-tool. This is not strictly necessary,
@@ -100,12 +104,21 @@
     - Give the user read and write privileges over the $TRACKING_DIR
       directory and the files that it contains.
 
-    - Configure sudo and add the bash shell startup files, as described
-      above
+    - Also all files under /sources should be readable and writable by the
+      user.
 
-    - Note that the versions of LFS packages are automatically known to
-      the tool in this case, and there is no need to run the update-lfs.sh
-      script.
+    - All occurrences of /blfs_root in the tracking file (default
+      /var/lib/jhalfs/BLFS/instplg.xml) should be replaced with
+      /home/<user>/blfs_root after the move. This should also be done in
+      the "configuration" file in ~/blfs_root, unless this file is
+      completely removed to start anew.
+
+    - Configure sudo and add the bash shell startup files, as described
+      above (the tool can be used for the bash shell statup files)
+
+    - Note that the versions of all installed packages are automatically
+      known to the tool in this case, and there is no need to run the
+      update-installed.sh script.
 
   We assume that the BLFS tools will be used on a booted LFS system.
   Using them to build BLFS packages in a chroot jail is also possible,
@@ -303,11 +316,11 @@
    unhandled dependencies and/or to remove some script installing an unneeded
    package (unneeded packages may be pulled in the dependency chain, if
    they occur as an "or" with another package).
-      When there are circular dependencies (only one known in BLFS 8.0 for
-   recommended dependencies), you may need to move around scripts so that they
-   run in the order script-A script-B script-A. This involves copying script-A
-   to another name (using the xxx-a- fields), and possibly renaming the xxx-a-
-   fields of each involved script.
+      When there are circular dependencies not known to the book (this occurs
+   only for optional dependencies), you may need to move around scripts so
+   that they run in the order script-A script-B script-A. This involves
+   copying script-A to another name (using the xxx-a- fields). Note that this
+   should be done before generating the Makefile in the "work" directory.
 
    5.1  BLFS BOOTSCRIPTS::
 
@@ -319,23 +332,14 @@
    5.2  PACKAGE CONFIGURATION::
 
         For those packages that have a "Configuration" section, you should
-     edit the build script to fit the needs of your system. Sometimes, the
-     bash startup files are modified. The generated scripts contain a
-     line 'source /etc/profile', which ensures that the proper environment
-     variables are used.
+     edit the build script to fit the needs of your system. Presently, only
+     network configuration files have to be edited (wpa_supplicant,
+     dhcpcd, ...).
+        Sometimes, the bash startup files are modified. The scriptlets contain
+     a line 'source /etc/profile', which ensures that the most recent startup
+     files are sourced.
 
-   5.3  PAGES WITH TWO OR MORE PACKAGES::
-
-        For example: sane, poppler, audacious, freetts, which, etc.
-
-        On the pages for those packages, the BLFS book actually has instructions
-     to download and install two or more packages. You must edit the scripts to
-     fix this. A common pitfall is that the variable PACKAGE may be used for
-     several tarballs. Be sure to save the PACKAGE variable to some other
-     name (for example PKG1, PKG2, etc) after each download. The unpacking
-     instructions may need to be repeated for each tarball in turn.
-
-   5.4  XORG7
+   5.3  XORG7
 
         The book has special page layouts for the Xorg7 packages. The tool
      breaks those pages into individual pages for each packages in the linear
@@ -344,13 +348,13 @@
         To build the whole Xorg7 chapter, select xinit. The (recommended)
      dependency chain brings in the whole set of Xorg packages.
 
-   5.5  PATCHES
+   5.4  PATCHES
 
         Please, make sure that all scripts have the commands to download/apply
      the required patches. Due to book layout issues, some patches may be
      missing (as of BLFS 8.0, all the patches seem to be downloaded).
 
-   5.6  ROOT COMMANDS
+   5.5  ROOT COMMANDS
 
         If building as a normal user (the default setting), be sure that all
      commands that require root privileges are run using sudo. Also make sure
