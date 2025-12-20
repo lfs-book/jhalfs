@@ -303,10 +303,10 @@ EOF
 .NOTPARALLEL:
 
 all:	ck_UID ck_terminal ck_mountpoint mk_SETUP mk_LUSER mk_SUDO mk_CHROOT mk_BOOT create-sbu_du-report
-ifeq ( \$(ADD_BLFS_TOOLS), y )
+ifeq (\$(ADD_BLFS_TOOLS),y)
   all:    mk_BLFS_TOOL
 endif
-ifeq ( \$(ADD_CUSTOM_TOOLS), y )
+ifeq (\$(ADD_CUSTOM_TOOLS),y)
   all:    mk_CUSTOM_TOOLS
 endif
 all:
@@ -394,14 +394,14 @@ mk_BOOT: mk_CHROOT | devices
 	@( sudo \$(CHROOT1) -c "cd \$(SCRIPT_ROOT) && make BREAKPOINT=\$(BREAKPOINT) BOOT")
 	@touch \$@
 
-ifeq ( \$(ADD_BLFS_TOOLS), y )
+ifeq (\$(ADD_BLFS_TOOLS),y)
 mk_BLFS_TOOL: create-sbu_du-report | devices
 	@\$(call sh_echo_PHASE,Building BLFS_TOOL)
 	@sudo \$(CHROOT1) -c "make -C $BLFS_ROOT/work"
 	@touch \$@
 endif
-ifeq ( \$(ADD_CUSTOM_TOOLS), y )
-ifeq ( \$(ADD_BLFS_TOOLS), y )
+ifeq (\$(ADD_CUSTOM_TOOLS),y)
+ifeq (\$(ADD_BLFS_TOOLS),y)
 mk_CUSTOM_TOOLS: mk_BLFS_TOOL | devices
 else
 mk_CUSTOM_TOOLS: create-sbu_du-report | devices
