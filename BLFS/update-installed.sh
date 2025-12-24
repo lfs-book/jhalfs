@@ -30,7 +30,7 @@ XSLDIR="$MYDIR"/xsl
 
 
 # First generate "packages.xml".
-make packages.xml
+make "$PACK_LIST"
 # Generate a Kconfig file (named newpack.in)
 xsltproc --nonet -o newpack.in ${XSLDIR}/gen_newpack.xsl ${PACK_LIST}
 # Launch the menu
