@@ -63,5 +63,5 @@ sed -n 's/CONFIG_\([^=[:space:]]\+\)[[:space:]]*=[[:space:]]*y/\1/p' newpack.con
    sed -i "s@PACKDESC@${MYDIR}/packdesc.dtd@" track.tmp
    xmllint --format --postvalid track.tmp > "$TRACKFILE"
 done #while read pack
-rm newpack.{in,conf} track.tmp
+rm -f newpack.{in,conf} track.tmp
 exit
