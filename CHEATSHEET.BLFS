@@ -1,0 +1,40 @@
+This file contains a procedure for building BLFS packages using jhalfs.
+It is supposed that the jhalfs tools for building BLFS are already installed,
+possibly using one of the procedures in CHEATSHEET.
+
+Step 1: as user, from home directory:
+  $ cd blfs_root
+  $ make
+  - Fill up the menu with the packages you want to build, and for
+    non package menus:
+Build settings  --->
+    Mail server for resolving the MTA dependency (<sendmail>)  --->
+    Dependency level (Required plus recommended dependencies)  --->
+(<en_US.UTF-8>) LANG variable in the form ll_CC.charmap[@modifiers]
+[*] Build as User
+[ ] Use `porg style' package management
+[*] Remove libtool .la files after package installation
+[ ] Generate statistics for the requested package(s)
+Build Layout  --->
+(/sources) Directory of sources
+[ ] Downloads sources to subdirectories
+(/sources) Build directory
+[*] Build into subdirectories
+[ ] Keep source directory
+Optimization  --->
+(0) Number of parallel jobs
+(EMPTY) Content of variable CFLAGS
+(EMPTY) Content of variable CXXFLAGS
+(EMPTY) Content of variable LDFLAGS
+  - exit and wait for completion
+
+Step 2: (often optional, but...)
+  - verify generated scripts
+
+Step 3: create the build ordering Makefile
+  $ mkdir work && cd work
+  $ ../gen-makefile.sh
+
+Step 4: build the packages
+  $ make
+  - go grab a coffee
