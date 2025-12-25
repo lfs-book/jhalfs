@@ -1,119 +1,229 @@
-This file contains examples of menu settings for various tasks.
-------------------------------
-LFS book, System V, stable (8.2) version.
-Download the files to /usr/src (verify you have write access)
-Build in /mnt/lfs (should be owned by root, verify you can execute sudo)
-Clean the build directory before beginning
-Build a kernel, whose configuration is in /home/user/config-4.15-lfs-1
-An fstab for the future system is located in /home/user/fstablfs
-Run only the critical testsuites
-Settings for a French user
-Run four make jobs in parallel
------------------------------
+This file contains procedures to build LFS and install the jhalfs tools
+for building BLFS packages.
+==============================
+Procedure 1: Install blfs tools when building LFS
+==============================
+Stage 1: Host configuration
+---------------
+Step 1: as user, from home directory:
+  $ git clone https://git.linuxfromscratch.org/jhalfs.git
+  $ cd jhalfs
+  $ mkdir custom/config
+  $ cp custom/examples/950-userconf custom/config
+  - Edit custom/config/950-userconf, replacing the fields in angle brackets
+    (< ... >) with information for the user that will be created on the new
+    system.
+
+Step 2: as root:
+  - Create the new partition, the directory /mnt/lfs, and mount the new
+    partition on it (follow book up to the end of chapter 2)
+  - Create a directory /sources on the host, and change its mode:
+    $ chmod a+wt /sources
+    (Beware: on host, not on /mnt/lfs)
+  - Run visudo and give enough privilege to the host user, so that she/he
+    can run any command as any user
+
+Step 3: as user:
+  - Download the kernel to /sources, unpack it, run the configuration steps
+    described in LFS Book section 10.3. If UEFI is needed, add the configuration
+    steps from BLFS book Chapter 5, section "Using GRUB to Set Up the Boot
+    Process with UEFI".
+  - When you are done with configuration, copy .config:
+  $ cp .config ../config-<version>
+  - Create a file /sources/fstab with content as described in 10.2 (note:
+    in /sources, not in /etc)
+
+Stage 2: Building LFS
+Step 4: as user, from ~/jhalfs
+  - Run "make", and fill in the menus as follows
+    (some fields should be changed for your configuration, they will be denoted
+    with xxx/yyy to indicate a choice between xxx and yyy, or in angle brackets
+    <...> if several choices are possible)
+
 BOOK Settings --->
-    Use BOOK (Linux From Scratch System V)  --->
-    Release (Branch or stable book)  --->
-    Branch (preceded by "branch-"), stable Version, or tag (8.2)
-[ ] Add blfs-tool support (NEW)
-[ ] Add custom tools support (NEW)
+    Choose BOOK (Linux From Scratch)  --->
+    Init system (LFS SysV/LFS systemd) --->
+    XML Source of Book (retrieved from git repository)  --->
+    (trunk) Which point in git history?
+    Multilib (Standard LFS on i686 or amd64)  --->
+    Build method (chroot)  --->
+[*] Add blfs-tool support
+    blfs-tool dependencies  --->
+      [*] libxml2 (required)
+      [*] libxslt (required)
+      [*] DocBook XML DTD (required)
+      [*] lynx (optional, for reading the generated book)
+      [*] sudo (recommended)
+      [*] wget (recommended)
+      [*] GPM (optional, see help)
+      [*] GIT client (optional, see help)
+    BLFS book version (BLFS Branch (default trunk) or any commit)  --->
+(trunk) BLFS Book commit (branch/tag/sha) (NEW)
+(/blfs_root) Root of the tools directory (see help)
+(blfs-xml) BLFS sources directory (internal parameter)
+(lfs-xml) LFS sources directory (internal parameter)
+[*] Add custom tools support
+(/var/lib/jhalfs/BLFS) Installed packages database directory
 
 General Settings --->
-       Build Directory (/mnt/lfs)
-   [*] Retrieve source files
-         Package Archive Directory (/usr/src)
-   [ ]   Retry on 'connection refused' failure (NEW)
-         Number of retry attempts on download failures (20) (NEW)
-         Download timeout (in seconds) (30) (NEW)
-         FTP mirror (http://ftp.osuosl.org) (NEW)
-   [*] Run the makefile
-   [*] Rebuild files
+(lfs) Temporary user for chapters 4, 5, and 6 (should not exist)
+(lfs) Group of user for chapters 4, 5, and 6 (should not exist)
+(/mnt/lfs) Build Directory
+[*] Retrieve source files
+(/sources) Package Archive Directory
+(<ftp.snt.utwente.nl/pub/software>) Replacement for ftp.gnu.org
+[ ]     Retry on 'connection refused' failure
+(20)    Number of retry attempts on download failures
+(30)    Download timeout (in seconds)
+[ ] Run the makefile
+[*] Rebuild files
 
 Build Settings --->
-   [*] Run testsuites
-         Tests level (Only final critical testsuites)  --->
-       Flavour (Don't stop on testsuite failures)  --->
-   [ ] Package management
-   [ ] Create a log of installed files for each package
-   [*] Use a custom fstab file
-         Fstab file (optional) ($HOME/fstablfs)
-   [*] Build the kernel
-         Kernel config file ($HOME/config-4.15-lfs-1)
-   [ ] Strip Installed Binaries/Libraries
-   [ ] Install non-wide-character ncurses
-   [ ] DO NOT use/display progress_bar
-       TimeZone (Europe/Paris)
-       Language (fr_FR.UTF-8)
-   [ ] Install the full set of locales
-       Groff page size (A4)  --->
+    Parallelism settings  --->
+      [*] Use all cores
+      (all)   set of cpus to use, or 'all' for all cpus
+      [*/ ] Build Binutils pass1 without parallelism (Real SBU)
+[ ] Run testsuites
+[ ] Keep build directory in chapter 8
+[ ] Test mismatch beween package version and directory name
+[ ] Package management
+[*] Create a log of installed files for each package
+[*] Strip Installed Binaries/Libraries
+[*/ ] DO NOT use/display progress_bar
 
-Advanced Features --->
-   [*] Create SBU and disk usage report
-   [ ] Run comparison analysis on final stage
-   [*] Optimization and parallelization
-         Optimization settings  --->
-           Number of parallel `make' jobs (4)
-           Optimization level  (Both temp tools and final system)  --->
-       Internal Settings (WARNING: for jhalfs developers only)  --->
+System configuration --->
+[*] Use a custom fstab file
+(/sources/fstab) Fstab file (optional)
+[*] Build the kernel
+(/sources/config-<version>) Kernel config file
+[ ] Install non-wide-character ncurses
+(<GMT>) TimeZone
+(<en_US.UTF-8>) Language
+[ ] Install the full set of locales
+    Groff page size (A4/Letter)  --->
+(<my-lfs>) Hostname (see help)
+    Network configuration  --->
+      (<ens3>) netword card name
+      (<10.0.2.9>) Static IP address
+      (<10.0.2.2>) Gateway
+      (<24>) Subnet prefix
+      (<10.0.2.255>) Broadcast address
+      (<local>) Domain name (see help)
+      (<10.0.2.3>) Primary Name server
+      (<8.8.8.8>) Secondary Name server
+    Console configuration  --->
+      (<lat0-16>) Console font
+      (<us>) Keymap name
+      [ ] Hardware clock is set to local time
+      (<4>) Default log level (1-8)
+Advanced Features  --->
+    [ ] Optimization
+    [*] Create SBU and disk usage report
+    [ ] Save temporary system work
+    [ ] Run comparison analysis on final stage
+    Internal Settings (WARNING: for jhalfs developers only)  --->
+      (keep all defaults)
 
 [ ] Rebuild the Makefile (see help)
 
-------------------------------
-------------------------------
-LFS book, systemd, XML source of the LFS book in /usr/src/lfsbook
-Download the files to /usr/src (verify you have write access)
-Build in /mnt/lfs (should be owned by root, verify you can execute sudo)
-Clean the build directory before beginning
-Build a kernel, whose configuration is in /home/user/config-4.15-lfs-systemd
-An fstab for the future system si located in /home/user/fstablfs
-Run all the testsuites
-Settings for an user in California
-Run four make jobs in parallel
------------------------------
-BOOK Settings --->
-    Use BOOK (Linux From Scratch systemd)  --->
-    Release (Working Copy)  --->
-    Loc of working copy (mandatory) (/usr/src/lfsbook)
-[ ] Add blfs-tool support (NEW)
-[ ] Add custom tools support (NEW)
+  - Exit the menu (type "q"), then answer the questions, and wait for
+    completion.
 
-General Settings --->
-       Build Directory (/mnt/lfs)
-   [*] Retrieve source files
-         Package Archive Directory (/usr/src)
-   [ ]   Retry on 'connection refused' failure (NEW)
-         Number of retry attempts on download failures (20) (NEW)
-         Download timeout (in seconds) (30) (NEW)
-         FTP mirror (http://ftp.osuosl.org) (NEW)
-   [*] Run the makefile
-   [*] Rebuild files
+step 5: build the LFS system: as user, run:
+  $ make -C /mnt/lfs/jhalfs
+    You can leave the computer because building LFS takes some time...
 
-Build Settings --->
-   [*] Run testsuites
-         Tests level (Both temporary tools and final system testsuites) --->
-       Flavour (Don't stop on testsuite failures)  --->
-   [ ] Package management
-   [ ] Create a log of installed files for each package
-   [*] Use a custom fstab file
-         Fstab file (optional) ($HOME/fstablfs)
-   [*] Build the kernel
-         Kernel config file ($HOME/config-4.15-lfs-systemd
-   [ ] Strip Installed Binaries/Libraries
-   [ ] Install non-wide-character ncurses
-   [ ] DO NOT use/display progress_bar
-       TimeZone (America/Los_Angeles)
-       Language (en_US.UTF-8)
-   [ ] Install the full set of locales
-       Groff page size (letter)  --->
+Stage 3: configuring the LFS system
+step 6: when the build finishes:
+  - Enter chroot:
+  $ make -C /mnt/lfs/jhalfs chroot
+  - Set a password for root:
+  # passwd
+  - and for the unprivileged user:
+  # passwd <username>
 
-Advanced Features --->
-   [*] Create SBU and disk usage report
-   [ ] Run comparison analysis on final stage
-   [*] Optimization and parallelization
-         Optimization settings  --->
-           Number of parallel `make' jobs (4)
-           Optimization level  (Both temp tools and final system)  --->
-       Internal Settings (WARNING: for jhalfs developers only)  --->
+step 7: set up GRUB:
+  - If you need UEFI, see below, otherwise:
+  # grub-install --target i386-pc /dev/<sda>
+  - Set up /boot/grub.cfg as explained in 10.3
 
-[ ] Rebuild the Makefile (see help)
+step 7-bis: set up GRUB for UEFI
+  - Become the unprivileged user:
+  # su - <username>
+  - Then run:
+  $ cd blfs_root
+  $ make
+    select:
+[*] Post LFS Configuration and Extra Software  --->
+   [*] File Systems and Disk Management  --->
+      [*] grub-efi <2.12> for EFI
+  - Exit, answer the questions
+  - When the script generation is done:
+  $ mkdir work && cd work
+  $ ../gen-makefile.sh
+  $ make
+  - Wait for completion, then log out from user:
+  $ exit
+  - Configure grub uefi as instructed in blfs chapter 5.
 
-------------------------------
+step 8: end of procedure 1:
+  - Exit chroot:
+# exit
+  - Then reboot to LFS.
+
+==============================
+Procedure 2: Install blfs tools after building LFS
+==============================
+Follow procedure 1 up to step 8, except you don't use 950-userconf, you change
+step 4, first menu:
+BOOK Settings  --->
+    Choose BOOK (Linux From Scratch)  --->
+    Init system (LFS SysV)  --->
+    XML Source of Book (retrieved from git repository)  --->
+(trunk) Which point in git history?
+    Multilib (Standard LFS on i686 or amd64)  --->
+    Build method (chroot)  --->
+[ ] Add blfs-tool support
+[ ] Add custom tools support
+and you don't set a password for the unprivileged user, since it has not been
+created yet.
+
+Stage 4: installing BLFS building tools on a running LFS system
+step 9: As root on the LFS system:
+  - Install the necessary dependencies for jhalfs (see the dependencies in
+    the menu "blfs-tools dependencies", above), following the BLFS book
+    by the method of your choice (in chroot, using ssh after installing openssh,
+    ... )
+  - Create an unprivileged user
+  - Boot LFS and log in as this user; from now on, everything is done as this
+    user.
+  - Install jhalfs:
+  $ git clone https://git.linuxfromscratch.org/jhalfs.git
+  $ cd jhalfs
+  - Prepare the system:
+  $ sudo mkdir -p /var/lib/jhalfs/BLFS
+  $ sudo chown <username>:<username> /var/lib/jhalfs/BLFS
+
+step 10: install the BLFS tools: run
+  $ make
+  - Fill in the menu:
+BOOK Settings  --->
+    Choose BOOK (Beyond Linux From Scratch (see help))  --->
+    Init system (BLFS SysV/BLFS systemd)  --->
+    XML Source of Book (retrieved from git repository)  --->
+(trunk) Which point in git history? (NEW)
+(/blfs_root) Root of the tools directory (see help) (NEW)
+(blfs-xml) BLFS sources directory (internal parameter) (NEW)
+(lfs-xml) LFS sources directory (internal parameter) (NEW)
+    LFS book version (LFS branch (default trunk) or any commit)  --->
+(trunk) LFS Book Commit (mandatory) (NEW)
+(/var/lib/jhalfs/BLFS) Installed packages database directory (NEW)
+  - Exit, wait for completion.
+
+step 11: set up the BLFS tools: change to ~/blfs_root, and run
+"./update-installed.sh"
+select in the menu the packages you have installed (note: select all the LFS
+packages with a <A>). Check the versions of installed packages are the right
+ones. Change them if needed.
+
+You should be at the same point as at the end of procedure 1.
