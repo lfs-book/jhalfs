@@ -137,7 +137,7 @@ rm -rf ${BUILDDIR}${BLFS_ROOT}/*
 cp -r BLFS/* ${BUILDDIR}${BLFS_ROOT}
 cp -r menu ${BUILDDIR}${BLFS_ROOT}
 cp $COMMON_DIR/progress_bar.sh ${BUILDDIR}${BLFS_ROOT}
-cp README.BLFS ${BUILDDIR}${BLFS_ROOT}
+cp README.BLFS CHEATSHEET.BLFS ${BUILDDIR}${BLFS_ROOT}
 [[ $VERBOSITY > 0 ]] && echo "... OK"
 
 # Clean-up

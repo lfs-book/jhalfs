@@ -12,7 +12,7 @@ set -e
 cp -r BLFS/* ${BUILDDIR}${BLFS_ROOT}
 cp -r menu ${BUILDDIR}${BLFS_ROOT}
 cp $COMMON_DIR/progress_bar.sh ${BUILDDIR}${BLFS_ROOT}
-cp README.BLFS ${BUILDDIR}${BLFS_ROOT}
+cp README.BLFS CHEATSHEET.BLFS ${BUILDDIR}${BLFS_ROOT}
 if [ "$WRAP_INSTALL" = y ]; then
   sed -e 's/PKGDIR/JH_UNPACKDIR/' \
       -e 's/PKG_DEST/JH_PKG_DIR/' \
