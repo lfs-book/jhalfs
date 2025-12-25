@@ -31,6 +31,12 @@
       Other sources of information are the context help in the menu interface,
    and the LFS books themselves (both required readings of course!).
 
+      And for the impatient: step by step procedures are given in CHEATSHEET.
+   Those procedures bring the user up to a full LFS build and installation of
+   tools for building BLFS packages. But it should be obvious to remove
+   sûrious steps for just building LFS.
+   
+
 2. PREREQUISITES::
 
       It is strongly advised that you first build manually a complete system
@@ -118,7 +124,7 @@
    MENU "BOOK Settings"
 
       Choose BOOK: You have two choices: "Linux from scratch" or
-      "Beyond Kinux From Scratch (see help)"
+      "Beyond Linux From Scratch (see help)"
          The BLFS part is described in README.BLFS
 
       Init system: You have two choices: "LFS SysV" or "LFS systemd" (or
@@ -133,7 +139,7 @@
 
       Which point in git history? (if you have chosen to retrieve the book
       sources from the git repository)
-         You can use any way of denote a commit known to the "git" program.
+         You can use any way of denoting a commit known to the "git" program.
       Most popular ones are "trunk" (for the development version) or the
       version string of a stable version (such as "12.1").
 
@@ -226,7 +232,7 @@
          the number entered here. Also MAKEFLAGS will be set to "-jN" (where
          N is the number entered) at the beginning of each scripts. Furthermore
          NINJAJOBS will be set to N in the environment. This allows to run all
-         books with N threads, except for paarts that need other envars to be
+         books with N threads, except for parts that need other envars to be
          set
        - Build Binutils pass1 without parallelism (Real SBU)
             The standard SBU is defined as the time to run the binutils-pass1
@@ -363,6 +369,7 @@
                 /packInstall.sh.template
 
         CHEATSHEET
+        CHEATSHEET.BLFS
         FUNCTION_LIST
         LICENSE
         README
