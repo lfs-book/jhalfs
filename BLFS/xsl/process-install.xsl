@@ -20,6 +20,7 @@
          contains(string($current-instr),'vector-fill.so') or
          contains(string($current-instr),'rst*.py') or
          contains(string($current-instr),'gnome-control-center') or
+         contains(string($current-instr),'runlevel.service') or
          contains(string($current-instr),'Gimp')">
 ]>
 
