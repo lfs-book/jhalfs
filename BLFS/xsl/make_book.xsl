@@ -548,7 +548,7 @@
       <!-- We extract install instructions from the userinput containing
            a loop. There is always one pushd and one popd command.
            Problem is there may be more than one popd (case of kapidox
-           in kf6 and libpciaccess in Xorg libraries). So we call
+           in kf6 and libpciaccess,libxkbfile in Xorg libraries). So we call
            a special template for providing instructions that work in
            all cases. -->
       <xsl:variable name="install-instructions">
@@ -722,8 +722,8 @@ name=$(echo $packagedir | sed 's/-[[:digit:]].*//')
   </xsl:template>
 
   <xsl:template name="inst-instr">
-    <!-- This template is necessary because of the "libpciaccess" case in Xorg
-         libraries and the "kapidox" case in kf6:
+    <!-- This template is necessary because of the "libpciaccess" and
+         "libxkbfile" cases in Xorg and the "kapidox" case in kf6:
          Normally, the general instructions extract the package and change
          to the extracted dir for running the installation instructions.
          When installing a sub-package of a compound package, the installation
@@ -742,9 +742,15 @@ name=$(echo $packagedir | sed 's/-[[:digit:]].*//')
             <!-- only the instructions inside the "case" and before popd -->
             <xsl:copy-of select="substring-after(substring-before($inst-instr,'popd'),'kapidox)')"/>
           </xsl:when>
-          <xsl:when test="$package='libpciaccess'">
+          <xsl:when test="$package='libpciaccess' or
+                          $package='libxkbfile'">
             <!-- only the instructions inside the "case" and before popd -->
-            <xsl:copy-of select="substring-after(substring-before($inst-instr,'popd'),'libpciaccess* )')"/>
+            <xsl:copy-of
+            select="substring-after(
+                      substring-after(
+                        substring-before($inst-instr,'popd'),
+                        'libpciaccess'),
+                      ')')"/>
           </xsl:when>
           <xsl:otherwise>
             <!-- We first copy what is before the first "as_root", then what is
