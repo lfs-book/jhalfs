@@ -516,7 +516,7 @@
     </sect2>
   </xsl:template>
 
-<!-- we have gotten an xorg package (or xcb-utils or plasma or fk6).
+<!-- we have gotten an xorg package (or xcb-utils or plasma or kf6).
      We are at the installation page
      but now we need to make an autonomous page from the global
      one -->
