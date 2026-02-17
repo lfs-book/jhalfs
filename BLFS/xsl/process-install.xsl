@@ -333,7 +333,15 @@ echo Size after install: $(sudo du -skx --exclude home $BUILD_DIR) >> $INFOLOG
             <xsl:with-param name="want-stats" select="$want-stats"/>
           </xsl:call-template>
         </xsl:if>
-        <xsl:apply-templates select="$current-instr"/>
+        <!-- we have a special case for the "as_root" function -->
+        <xsl:choose>
+          <xsl:when test="contains(string($current-instr),'as_root()')">
+            <xsl:call-template name="custom_as_root"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:apply-templates select="$current-instr"/>
+          </xsl:otherwise>
+        </xsl:choose>
         <xsl:call-template name="process-install">
           <xsl:with-param
              name="instruction-tree"
@@ -588,4 +596,17 @@ ROOT_EOF</xsl:text>
     </xsl:choose>
   </xsl:template>
 
+  <xsl:template name="custom_as_root">
+    <xsl:text>
+as_root() {</xsl:text>
+    <xsl:call-template name="begin-root"/>
+    <xsl:call-template name="begin-install"/>
+    <xsl:text>
+$*</xsl:text>
+    <xsl:call-template name="end-install"/>
+    <xsl:call-template name="end-root"/>
+    <xsl:text>
+}
+</xsl:text>
+  </xsl:template>
 </xsl:stylesheet>
