@@ -131,8 +131,8 @@
                    followed by -<digit> to make sure we have the right
                    package, but since we'll have to do that test anyway
                    later because there are also cases where packages start
-                   the same in one cat command, we'll have to do the test
-                   later nayway. -->
+                   the same in one cat command, let's not do complicate things
+                   here. -->
               <xsl:apply-templates
                 select="//sect1[(contains(@id,'xorg7') or
                                  contains(@id,'frameworks') or
@@ -630,6 +630,18 @@
           <title>Installation of <xsl:value-of select="$package"/></title>
 
           <para>
+            First define a function that can be customized for package
+            management:
+          </para>
+
+          <screen>
+            <userinput>
+              <xsl:copy-of select=".//userinput[contains(text(),
+                                                         'as_root()')]/text()"/>
+            </userinput>
+          </screen>
+
+          <para>
             Install <application><xsl:value-of select="$package"/></application>
             by running the following commands:
           </para>
@@ -641,19 +653,9 @@
             <xsl:text>
 name=$(echo $packagedir | sed 's/-[[:digit:]].*//')
 </xsl:text>
-            <xsl:value-of select="substring-before($install-instructions,
-                                                   'as_root')"/>
+            <xsl:copy-of select="$install-instructions"/>
           </userinput></screen>
 
-          <para>
-            Now as the <systemitem class="username">root</systemitem> user:
-          </para>
-          <screen role='root'>
-            <userinput><xsl:value-of select="substring-after(
-                                                   $install-instructions,
-                                                   'as_root')"/>
-            </userinput>
-          </screen>
         </sect2>
       </xsl:element><!-- sect1 -->
     </xsl:if>
@@ -722,14 +724,13 @@ name=$(echo $packagedir | sed 's/-[[:digit:]].*//')
   </xsl:template>
 
   <xsl:template name="inst-instr">
-    <!-- This template is necessary because of the "libpciaccess" and
-         "libxkbfile" cases in Xorg and the "kapidox" case in kf6:
+    <!-- This template is necessary because of the "kapidox" case in kf6:
          Normally, the general instructions extract the package and change
          to the extracted dir for running the installation instructions.
          When installing a sub-package of a compound package, the installation
          instructions to be run are located between a pushd and a popd,
-         *except* for Xorg libraries and kf6, where a popd occurs inside a
-         case for libpciaccess and kapidox...
+         *except* for kf6, where a popd occurs inside a
+         case for kapidox...
          So we call this template with a "inst-instr" string that contains
          everything after the pushd.-->
     <xsl:param name="inst-instr"/>
@@ -742,23 +743,10 @@ name=$(echo $packagedir | sed 's/-[[:digit:]].*//')
             <!-- only the instructions inside the "case" and before popd -->
             <xsl:copy-of select="substring-after(substring-before($inst-instr,'popd'),'kapidox)')"/>
           </xsl:when>
-          <xsl:when test="$package='libpciaccess' or
-                          $package='libxkbfile'">
-            <!-- only the instructions inside the "case" and before popd -->
-            <xsl:copy-of
-            select="substring-after(
-                      substring-after(
-                        substring-before($inst-instr,'popd'),
-                        'libpciaccess'),
-                      ')')"/>
-          </xsl:when>
           <xsl:otherwise>
-            <!-- We first copy what is before the first "as_root", then what is
-            after the first "popd", by calling the template again. The
-            reason for excluding "as_root" is that the output template takes
-            special action when it sees "as_root", which generates bogus code
-            if there are several of those...-->
-            <xsl:copy-of select="substring-before($inst-instr,'as_root')"/>
+            <!-- We first copy what is before the first "popd", then what is
+            after the first "popd", by calling the template again. -->
+            <xsl:copy-of select="substring-before($inst-instr,'popd')"/>
             <xsl:call-template name="inst-instr">
               <xsl:with-param
                 name="inst-instr"
