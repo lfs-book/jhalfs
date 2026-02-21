@@ -379,7 +379,7 @@ for node in $(grep -l ' a ' *.dep); do
       p=0 # No "after" dependency depends on this parent
       for start in $(grep ' a ' $node | cut -d' ' -f3); do
         seen=" " # global variable used in "path_to"
-        if path_to ${start}.dep ${parent%.dep} 3; then p=1; break; fi
+        if path_to ${start}.dep ${parent%.dep} $DEP_LEVEL; then p=1; break; fi
       done
       if test $p = 0; then
         b=1
