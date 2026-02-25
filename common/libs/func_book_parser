@@ -157,7 +157,7 @@ create_chroot_scripts() {    #
   xsltproc --nonet --xinclude \
            --stringparam jobs_2 "$JOBS_2" \
            -o chroot-scripts/ chroot.xsl  \
-           $BOOK/chapter0?/*chroot*.xml >> $LOGDIR/$LOG 2>&1
+           prbook.xml >> $LOGDIR/$LOG 2>&1
   echo "done"
 
 }
@@ -172,12 +172,12 @@ create_kernfs_scripts() {    #
   if [ ! -z $ARCH ] ; then echo -n " $ARCH" ; fi
   echo -n "... "
   xsltproc --nonet \
-           -o kernfs-scripts/devices.sh kernfs.xsl \
-           $BOOK/*/kernfs.xml >> $LOGDIR/$LOG 2>&1
+           -o kernfs-scripts/devices.sh kernfs-devices.xsl \
+           prbook.xml >> $LOGDIR/$LOG 2>&1
   chmod +x kernfs-scripts/devices.sh
   xsltproc --nonet \
-           -o kernfs-scripts/teardown.sh kernfs.xsl \
-           $BOOK/chapter??/reboot.xml >> $LOGDIR/$LOG 2>&1
+           -o kernfs-scripts/teardown.sh kernfs-teardown.xsl \
+           prbook.xml >> $LOGDIR/$LOG 2>&1
   chmod +x kernfs-scripts/teardown.sh
 
   echo "done"

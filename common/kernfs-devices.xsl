@@ -2,14 +2,47 @@
 
 <xsl:stylesheet
       xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+      xmlns:exsl="http://exslt.org/common"
+      extension-element-prefixes="exsl"
       version="1.0">
+
+<!-- Parameters -->
+
+  <xsl:param name="jobs_2" select="1"/>
+
+<!-- End parameters -->
 
   <xsl:output method="text"/>
 
+<!-- Start of templates -->
   <xsl:template match="/">
     <xsl:text>#!/bin/bash
 </xsl:text>
-    <xsl:apply-templates select="//userinput[contains(string(),'--bind') or
+    <xsl:apply-templates select="//chapter[
+	@id='chapter-chroot-temporary-tools']"/>
+  </xsl:template>
+
+  <xsl:template match="chapter">
+	  <xsl:apply-templates select="./sect1[
+                                @id='ch-tools-kernfs']">
+      <xsl:with-param name="chap-num" select="position()+3"/>
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="sect1">
+	  <xsl:apply-templates select="./sect2[
+                                @id='ch-tools-bindmount' or
+                                @id='ch-tools-kernfsmount']">
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="sect2">
+    <xsl:apply-templates select="./screen">
+    </xsl:apply-templates>
+  </xsl:template>
+
+  <xsl:template match="screen">
+    <xsl:apply-templates select="./userinput[contains(string(),'--bind') or
                                              contains(string(),'/proc') or
                                              contains(string(),'readlink') or
                                              contains(string(),'-Rv')]"/>
@@ -81,4 +114,5 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
 </xsl:stylesheet>

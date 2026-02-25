@@ -6,10 +6,23 @@
       extension-element-prefixes="exsl"
       version="1.0">
 
+<!-- Parameters -->
+
   <xsl:param name="jobs_2" select="1"/>
 
+<!-- End parameters -->
+
+<!-- Start of templates -->
   <xsl:template match="/">
-    <xsl:apply-templates select="//sect1"/>
+    <xsl:apply-templates select="//chapter[
+                                @id='chapter-chroot-temporary-tools']"/>
+  </xsl:template>
+
+  <xsl:template match="chapter">
+    <xsl:apply-templates select="./sect1[
+                                @id='ch-tools-chroot']">
+      <xsl:with-param name="chap-num" select="position()+3"/>
+    </xsl:apply-templates>
   </xsl:template>
 
   <xsl:template match="sect1">
@@ -94,4 +107,5 @@
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
+
 </xsl:stylesheet>
