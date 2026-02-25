@@ -332,7 +332,7 @@ if [[ "$REBUILD_MAKEFILE" = "n" ]] ; then
   cp "$COMMON_DIR"/{makefile-functions,progress_bar.sh,run-in-cgroup.sh} "$JHALFSDIR/"
 
 # Copy needed stylesheets
-  cp "$COMMON_DIR"/{packages.xsl,chroot.xsl,kernfs.xsl} "$JHALFSDIR/"
+  cp "$COMMON_DIR"/{packages.xsl,chroot.xsl,kernfs*.xsl} "$JHALFSDIR/"
   cp "$PACKAGE_DIR/$XSL" "$JHALFSDIR/"
 
   export XSL=$JHALFSDIR/${XSL}
