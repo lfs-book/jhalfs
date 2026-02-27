@@ -459,8 +459,9 @@ exit 124; }&#xA;</xsl:text>
      file removal (and possibly other clean up). We therefore call a template
      to comment them out appropriately and also to not stop if stripping
      fails. -->
-      <xsl:when test="contains(string(),'strip ') or
-                      contains(string(),'\*.la')">
+      <xsl:when test="not(./literal) and
+                      (contains(string(),'strip ') or
+                      contains(string(),'\*.la'))">
         <xsl:call-template name="comment-strip">
           <xsl:with-param name="instructions" select="string()"/>
         </xsl:call-template>
