@@ -30,6 +30,8 @@ menu "BOOK Settings"
 
     choice
     prompt "Init system"
+    default BOOK_LFS_SYSD if BOOK_LFS_ANY
+    default BLFS_SYSD if BOOK_BLFS
 
       if BOOK_LFS_ANY
         config BOOK_LFS
