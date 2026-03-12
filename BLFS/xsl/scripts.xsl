@@ -806,7 +806,7 @@ echo Time before test: ${SECONDS} >> $INFOLOG
       </xsl:otherwise>
     </xsl:choose>
     <xsl:choose>
-      <xsl:when test="contains($ns,'make')">
+      <xsl:when test="starts-with($ns, 'make ') or contains($ns,' make ')">
         <xsl:value-of select="substring-before($ns,'make ')"/>
         <xsl:text>make </xsl:text>
         <xsl:if test="not(contains($ns,'-k'))">

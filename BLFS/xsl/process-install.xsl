@@ -404,8 +404,9 @@ echo Size after install: $(sudo du -skx --exclude home $BUILD_DIR) >> $INFOLOG
           <xsl:text>#</xsl:text>
         </xsl:if>
         <xsl:choose>
-          <xsl:when test="contains($test-instr,'make')
-                  and not(contains($test-instr,'make -k'))">
+          <xsl:when test="contains($test-instr,' make ')
+                    or starts-with($test-instr,'make ')
+                  and not(contains($test-instr,'-k'))">
             <xsl:copy-of select="substring-before($test-instr,'make')"/>
             <xsl:text>make -k</xsl:text>
             <xsl:copy-of select="substring-after($test-instr,'make')"/>
