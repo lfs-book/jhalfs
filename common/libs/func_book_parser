@@ -82,7 +82,7 @@ extract_commands() {         #
            $BOOK/index.xml >> $LOGDIR/$LOG 2>&1
 
   # Make sure the book contains arch attributes if multilib is asked
-  if [ "$MULTILIB" != default ] && ! grep -q 'arch[="* ]*ml' prbook.xml; then
+  if [ "$MULTILIB" != default ] && ! grep -q libdir=/usr/lib32 prbook.xml; then
     echo You have asked for multilib, but the book is not multilib
     echo -n "Do you want to continue? yes/no (no) "
     read -r ANSWER
