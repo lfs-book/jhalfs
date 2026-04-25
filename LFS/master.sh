@@ -51,12 +51,15 @@ chapter_targets() {       #
     #   in this case
     # - do not reinstall linux-headers when rebuilding
     # - grub config: must be done manually; skip it
+    # - reboot: same
     # - handle fstab and .config. Skip kernel if .config not supplied
     case "${this_script}" in
       *stripping*)     [[ "${STRIP}" = "n" ]] && continue ;;
       *linux-headers*) [[ -n "$N" ]] && continue ;;
-      8*grub)          (( nb_chaps == 5 )) && continue ;;
+      8*grub)          (( nb_chaps == 6 )) && continue ;;
       10*grub)         continue ;;
+      9*reboot)        (( nb_chaps == 6 )) && continue ;;
+      11*reboot)       continue ;;
       *fstab)          [[ -z "${FSTAB}" ]] ||
                        [[ ${FSTAB} == $BUILDDIR/sources/fstab ]] ||
                        cp ${FSTAB} $BUILDDIR/sources/fstab ;;
@@ -114,7 +117,7 @@ chapter_targets() {       #
       # Touch timestamp file if installed files logs shall be created.
       # But only for the final install chapter and not when rebuilding it
       if [ "${INSTALL_LOG}" = "y" ] &&
-         (( 1+nb_chaps <= $1 )) &&
+         (( nb_chaps <= $1 )) &&
          [ "x$N" = x ] ; then
         CHROOT_wrt_TouchTimestamp
       fi
@@ -127,7 +130,7 @@ chapter_targets() {       #
 
       # If using optimizations, write the instructions
       case "${OPTIMIZE}$1${nb_chaps}${this_script}${REALSBU}" in
-          0* | *binutils-pass1y | 15* | 167* | 177*) ;;
+          0* | *binutils-pass1y | 15* | 168* | 178*) ;;
           *kernel*) ;; # No CFLAGS for kernel
           *)  wrt_optimize "$name" ;;
       esac
@@ -193,7 +196,7 @@ EOF
     # except if the package build fails.
     if [ "$pkg_tarball" != "" ] ; then
       if [ "${INSTALL_LOG}" = "y" ] &&
-         (( 1+nb_chaps <= $1 )) &&
+         (( nb_chaps <= $1 )) &&
          [ "x${N}" = "x" ] ; then
         CHROOT_wrt_LogNewFiles "${this_script}"
       fi
@@ -210,7 +213,7 @@ EOF
     # Keep the script file name for Makefile dependencies.
     PREV=${this_script}
     # Set "system_build" var for iteration targets
-    if [ -z "$N" ] && (( 1+nb_chaps == $1 )); then
+    if [ -z "$N" ] && (( nb_chaps == $1 )); then
       system_build="$system_build $this_script"
     fi
 
@@ -244,7 +247,7 @@ build_Makefile() {           #
   # We need to know the chapter numbering, which depends on the version
   # of the book. Use the number of subdirs to know which version we have
   chaps=($(echo chapter*))
-  nb_chaps=${#chaps[*]} # 5 if classical version, 7 if new version
+  nb_chaps=${#chaps[*]} # 6 if classical version, 8 if new version
 # DEBUG
 #  echo chaps: ${chaps[*]}
 #  echo nb_chaps: $nb_chaps
@@ -253,11 +256,11 @@ build_Makefile() {           #
   # Make a temporary file with all script targets
   for (( i = 4; i < nb_chaps+4; i++ )); do
     chapter_targets $i
-    if (( i ==  nb_chaps )); then : # we have finished temporary tools
+    if (( i ==  nb_chaps - 1 )); then : # we have finished temporary tools
       # Add the save target, if needed
       [[ "$SAVE_CH5" = "y" ]] && wrt_save_target $Makefile_target
     fi
-    if (( i ==  1+nb_chaps )); then : # we have finished final system
+    if (( i ==  nb_chaps )); then : # we have finished final system
       # Add the iterations targets, if needed
       [[ "$COMPARE" = "y" ]] && wrt_compare_targets $i
     fi
