@@ -707,6 +707,13 @@ unset OLD_PKGDIR
           <xsl:with-param name="consolestring" select="string()"/>
         </xsl:call-template>
       </xsl:when>
+      <xsl:when test="$wrap-install='y' and ../@remap='install'">
+        <!-- We want to escape single quotes even in literal, because
+        it is wrapped into wrapInstall -->
+        <xsl:call-template name="output-wrap">
+          <xsl:with-param name="commands" select="string()"/>
+        </xsl:call-template>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:apply-templates/>
       </xsl:otherwise>
