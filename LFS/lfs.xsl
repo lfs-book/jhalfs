@@ -1261,9 +1261,9 @@ SCRIPT_ROOT=</xsl:text>
       <xsl:text>
 SRC_DIR=${ROOT}sources
 <!-- Set variables, for use by the Makefile and package manager -->
-VERSION=</xsl:text><!-- needed for Makefile, and may be used in PackInstall-->
+VERSION="</xsl:text><!-- needed for Makefile, and may be used in PackInstall-->
       <xsl:copy-of select=".//sect1info/productnumber/text()"/>
-      <xsl:text>
+      <xsl:text>"
 PKG_DEST=${SRC_DIR}/</xsl:text>
       <xsl:copy-of select="$order"/>
       <xsl:text>-</xsl:text>
@@ -1302,7 +1302,7 @@ if [ -d "${PKGDIR%-*}-build" ]; then  rm -rf ${PKGDIR%-*}-build; fi
 </xsl:text>
       <xsl:if test="$test-mismatch='y'">
         <xsl:text>
-if [ "${PKGDIR%$VERSION}" = "$PKGDIR" ]; then
+if [ "${PKGDIR%"$VERSION"}" = "$PKGDIR" ]; then
     echo Mismatch between version and directory name ! Exiting...
     exit 2
 fi

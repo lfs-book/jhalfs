@@ -253,11 +253,10 @@ update: all
 	    xmllint --format --postvalid track.tmp > \$(TRACKING_FILE); \\
 	    rm track.tmp; \\
 	done; \\
-	VERSION=\$\$(grep 'echo.*lfs-release' ../$LFS_XML/tmp/lfs-full.xml | \\
-	             sed 's/.*echo[ ]*\([^ ]*\).*/\1/'); \\
+	VERSION="$VERSION"; \\
 	xsltproc --stringparam packages ../packages.xml \\
 	    --stringparam package LFS-Release \\
-	    --stringparam version \$\$VERSION \\
+	    --stringparam version "\$\$VERSION" \\
 	    -o track.tmp \\
 	    ../xsl/bump.xsl \$(TRACKING_FILE); \\
 	sed -i 's@PACKDESC@$BLFS_ROOT/packdesc.dtd@' track.tmp; \\

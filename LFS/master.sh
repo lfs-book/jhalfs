@@ -76,7 +76,7 @@ chapter_targets() {       #
     # If it doesn't exist, we skip it in iterations rebuilds (except stripping
     # and revisedchroot, where .a and .la files are removed).
     pkg_tarball=$(sed -n 's/tar -xf \(.*\)/\1/p' $file)
-    pkg_version=$(sed -n 's/VERSION=\(.*\)/\1/p' $file)
+    pkg_version=$(sed -n 's/VERSION="\([^"]*\)"/\1/p' $file)
 
     if [[ "$pkg_tarball" = "" ]] && [[ -n "$N" ]] ; then
       case "${this_script}" in
@@ -490,8 +490,8 @@ CUSTOM_TOOLS: $custom_list
 create-sbu_du-report:  mk_BOOT
 	@\$(call echo_message, Building)
 	@if [ "\$(ADD_REPORT)" = "y" ]; then \\
-	  sudo ./create-sbu_du-report.sh logs $VERSION $(date --iso-8601); \\
-	  \$(call echo_report,$VERSION-SBU_DU-$(date --iso-8601).report); \\
+	  sudo ./create-sbu_du-report.sh logs "$VERSION" $(date --iso-8601); \\
+	  \$(call echo_report,"$VERSION-SBU_DU-$(date --iso-8601).report"); \\
 	fi
 	@touch  \$@
 

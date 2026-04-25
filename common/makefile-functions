@@ -16,14 +16,14 @@ nl_     = ""
 
 define echo_PHASE
   @echo $(BOLD)--------------------------------------------------------------------------------
-  @echo  $(tab_)$(tab_)Executing $(BLUE)$(1)$(WHITE) scripts
+  @echo  $(tab_)$(tab_)Executing $(BLUE)"$(1)"$(WHITE) scripts
   @echo $(BOLD)--------------------------------------------------------------------------------
   @echo $(WHITE)
 endef
 
 define sh_echo_PHASE
   echo $(BOLD)--------------------------------------------------------------------------------;\
-  echo  $(tab_)$(tab_)Executing $(BLUE)$(1)$(WHITE) scripts; \
+  echo  $(tab_)$(tab_)Executing $(BLUE)"$(1)"$(WHITE) scripts; \
   echo $(BOLD)--------------------------------------------------------------------------------$(WHITE)
 endef
 
@@ -50,7 +50,7 @@ endef
 
 define echo_message
   @echo $(BOLD)--------------------------------------------------------------------------------
-  @echo $(BOLD)$(1) target $(BLUE)$@$(BOLD)$(WHITE)
+  @echo $(BOLD)"$(1)" target $(BLUE)$@$(BOLD)$(WHITE)
 endef
 
 #=======================
@@ -59,7 +59,7 @@ endef
 #=== BUILD FUNCTIONS ===
 
 define remove_existing_dirs
-  @PKG_PATH=`ls -t $(SRCSDIR)/$(1) | head -n1` && \
+  @PKG_PATH=`ls -t $(SRCSDIR)/"$(1)" | head -n1` && \
   ROOT=`tar -tf $$PKG_PATH | head -n1 | sed -e 's@^./@@;s@/.*@@'` && \
   [ -n "$$ROOT" ] && \
   if [ -d $(SRCSDIR)/$$ROOT ]; then \
@@ -69,7 +69,7 @@ define remove_existing_dirs
 endef
 
 define remove_existing_dirs2
-  @PKG_PATH=`ls -t $(SRC)/$(1) | head -n1` && \
+  @PKG_PATH=`ls -t $(SRC)/"$(1)" | head -n1` && \
   ROOT=`tar -tf $$PKG_PATH | head -n1 | sed -e 's@^./@@;s@/.*@@'` && \
   [ -n "$$ROOT" ] && \
   if [ -d $(SRC)/$$ROOT ]; then \
@@ -85,12 +85,12 @@ endef
 
 define unpack
   @cd $(SRCSDIR) && \
-  tar -xvf `ls -t $(1) | head -n1` > $(PKG_LST)
+  tar -xvf `ls -t "$(1)" | head -n1` > $(PKG_LST)
 endef
 
 define unpack2
   @cd $(SRC) && \
-  tar -xvf `ls -t $(1) | head -n1` > $(PKG_LST)
+  tar -xvf `ls -t "$(1)" | head -n1` > $(PKG_LST)
 endef
 
 #==#
@@ -136,13 +136,13 @@ endef
 define log_new_files
   @find / -xdev ! -path "/$(SCRIPT_ROOT)/*" ! -path "/tmp/*" ! -path "$(SRC)/*" \
   -newer $(SRC)/timestamp-marker -not -type d \
-  -printf "%p\t%s\t%u:%g\t%m\t%l\n" | sort > $(crFILELOGDIR)/$(1)
+  -printf "%p\t%s\t%u:%g\t%m\t%l\n" | sort > $(crFILELOGDIR)/"$(1)"
 endef
 
 define log_new_files_LUSER
   @find $(BASEDIR) -xdev ! -path "$(BASEDIR)/$(SCRIPT_ROOT)/*" ! -path "$(BASEDIR)/tmp/*" ! -path "$(SRCSDIR)/*" \
   -newer $(SRCSDIR)/timestamp-marker -not -type d \
-  -printf "%p\t%s\t%u:%g\t%m\t%l\n" | sort > $(BASEDIR)$(crFILELOGDIR)/$(1)
+  -printf "%p\t%s\t%u:%g\t%m\t%l\n" | sort > $(BASEDIR)$(crFILELOGDIR)/"$(1)"
 endef
 
 #==@
@@ -150,13 +150,13 @@ endef
 define remove_build_dirs
   @ROOT=`head -n1 $(SRCSDIR)/$(PKG_LST) | sed 's@^./@@;s@/.*@@'` && \
   rm -rf $(SRCSDIR)/$$ROOT && \
-  rm -rf $(SRCSDIR)/$(1)-build
+  rm -rf $(SRCSDIR)/"$(1)"-build
 endef
 
 define remove_build_dirs2
   @ROOT=`head -n1 $(SRC)/$(PKG_LST) | sed 's@^./@@;s@/.*@@'` && \
   rm -rf $(SRC)/$$ROOT && \
-  rm -rf $(SRC)/$(1)-build
+  rm -rf $(SRC)/"$(1)"-build
 endef
 
 #==#
@@ -179,7 +179,7 @@ endef
 
 define echo_report
   echo ; \
-  echo $(BOLD) The report file $(BLUE)$(1)$(BOLD) has been created ; \
+  echo $(BOLD) The report file $(BLUE)"$(1)"$(BOLD) has been created ; \
   echo ; \
   echo $(BOLD)--------------------------------------------------------------------------------$(WHITE)
 endef
@@ -187,7 +187,7 @@ endef
 define echo_finished
   @echo $(BOLD)
   @echo --------------------------------------------------------------------------------
-  @echo $(BOLD) Finished the build of $(BLUE)$(1)$(BOLD)
+  @echo $(BOLD) Finished the build of $(BLUE)"$(1)"$(BOLD)
   @echo --------------------------------------------------------------------------------
   @echo  $(tab_)$(tab_)$(RED)W A R N I N G$(BOLD)
   @echo --------------------------------------------------------------------------------
@@ -227,7 +227,7 @@ endef
 define echo_boot_finished
   @echo $(BOLD)
   @echo --------------------------------------------------------------------------------
-  @echo        $(BOLD) Finished building a minimal boot system for $(BLUE)$(1)$(BOLD)
+  @echo        $(BOLD) Finished building a minimal boot system for $(BLUE)"$(1)"$(BOLD)
   @echo --------------------------------------------------------------------------------
   @echo  $(tab_)$(tab_)$(RED)W A R N I N G$(BOLD)
   @echo --------------------------------------------------------------------------------

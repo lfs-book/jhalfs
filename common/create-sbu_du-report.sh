@@ -3,7 +3,7 @@
 set -e
 
 LOGSDIR=$1
-VERSION=$2
+VERSION="$2"
 DATE=$3
 
 LINE="================================================================================"
@@ -32,7 +32,7 @@ LINE="==========================================================================
 # Set the report file
 REPORT="$VERSION"-SBU_DU-"$DATE".report
 
-[ -f "$REPORT" ] && : >$REPORT
+[ -f "$REPORT" ] && : >"$REPORT"
 
 # Dump generation time stamp and book version
 echo -e "\n`date`\n" > "$REPORT"
@@ -110,7 +110,7 @@ for log in $BUILDLOGS ; do
   if [ "$log" != "$FIRSTLOG" ] ; then
     INSTALL=`perl -e 'print ('$DU1' - '$DU1PREV')';`
     INSTALLMB=`perl -e 'printf "%.3f" , ('$DU1MB' - '$DU1MBPREV')';`
-    echo -e "Installed files disk usage:\t\t\t\t$INSTALL KB or $INSTALLMB MB\n" >> $REPORT
+    echo -e "Installed files disk usage:\t\t\t\t$INSTALL KB or $INSTALLMB MB\n" >> "$REPORT"
     # Append install values for grand total
     INSTALL2=`perl -e 'printf "%.3f" , ('$INSTALL2' + '$INSTALL')';`
     INSTALLMB2=`perl -e 'printf "%.3f" , ('$INSTALLMB2' + '$INSTALLMB')';`
@@ -121,13 +121,13 @@ for log in $BUILDLOGS ; do
   DU1MBPREV=$DU1MB
 
 # Dump time and disk usage values
-  echo -e "$LINE\n\t\t\t\t[$PACKAGE]\n" >> $REPORT
-  echo -e "Build time is:\t\t\t\t\t\t$MINUTES minutes and $SECS seconds" >> $REPORT
-  echo -e "Build time in seconds is:\t\t\t\t$TIME" >> $REPORT
-  echo -e "Approximate SBU time is:\t\t\t\t$SBU" >> $REPORT
-  echo -e "Disk usage before unpacking the package:\t\t$DU1 KB or $DU1MB MB" >> $REPORT
-  echo -e "Disk usage before deleting the source and build dirs:\t$DU2 KB or $DU2MB MB" >> $REPORT
-  echo -e "Required space to build the package:\t\t\t$REQUIRED1 KB or $REQUIRED2 MB" >> $REPORT
+  echo -e "$LINE\n\t\t\t\t[$PACKAGE]\n" >> "$REPORT"
+  echo -e "Build time is:\t\t\t\t\t\t$MINUTES minutes and $SECS seconds" >> "$REPORT"
+  echo -e "Build time in seconds is:\t\t\t\t$TIME" >> "$REPORT"
+  echo -e "Approximate SBU time is:\t\t\t\t$SBU" >> "$REPORT"
+  echo -e "Disk usage before unpacking the package:\t\t$DU1 KB or $DU1MB MB" >> "$REPORT"
+  echo -e "Disk usage before deleting the source and build dirs:\t$DU2 KB or $DU2MB MB" >> "$REPORT"
+  echo -e "Required space to build the package:\t\t\t$REQUIRED1 KB or $REQUIRED2 MB" >> "$REPORT"
 
 done
 
@@ -138,12 +138,12 @@ DU1=`du -skx --exclude=jhalfs --exclude=lost+found --exclude var/lib $LOGSDIR/..
 DU1MB=`perl -e 'printf "%.3f" , ('$DU1' / '1024')';`
 INSTALL=`perl -e 'print ('$DU1' - '$DU1PREV')';`
 INSTALLMB=`perl -e 'printf "%.3f" , ('$DU1MB' - '$DU1MBPREV')';`
-echo -e "Installed files disk usage:\t\t\t\t$INSTALL KB or $INSTALLMB MB\n" >> $REPORT
+echo -e "Installed files disk usage:\t\t\t\t$INSTALL KB or $INSTALLMB MB\n" >> "$REPORT"
 # Append install values for grand total
 INSTALL2=`perl -e 'printf "%.3f" , ('$INSTALL2' + '$INSTALL')';`
 INSTALLMB2=`perl -e 'printf "%.3f" , ('$INSTALLMB2' + '$INSTALLMB')';`
 
 # Dump grand totals
-echo -e "\n$LINE\n\nTotal time required to build the system:\t\t$SBU2  SBU" >> $REPORT
+echo -e "\n$LINE\n\nTotal time required to build the system:\t\t$SBU2  SBU" >> "$REPORT"
 # Total disk usage: including /tools but not /sources.
-echo -e "Total Installed files disk usage:\t\t\t$INSTALL2 KB or $INSTALLMB2 MB" >> $REPORT
+echo -e "Total Installed files disk usage:\t\t\t$INSTALL2 KB or $INSTALLMB2 MB" >> "$REPORT"

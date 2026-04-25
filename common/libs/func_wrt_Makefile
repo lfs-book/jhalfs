@@ -67,7 +67,7 @@ LUSER_wrt_target() {               # Create target and initialize log file
   local PREV=$2
   local version
   if [ "$3" != "" ]; then
-    version=-$3
+    version=-"$3"
   fi
 (
 cat << EOF
@@ -75,7 +75,7 @@ cat << EOF
 $i:  $PREV
 	@\$(call echo_message, Building)
 ${NO_PROGRESS}	@export BASHBIN=\$(SHELL) && \$(SHELL) progress_bar.sh \$@ \$\$PPID &
-	@echo "\$(nl_)\`date\`\$(nl_)" >logs/\$@$version
+	@echo "\$(nl_)\`date\`\$(nl_)" >logs/\$@"$version"
 	@ : > envars
 EOF
 ) >> $MKFILE.tmp
@@ -88,7 +88,7 @@ CHROOT_wrt_target() {              # Create target and initialize log file
   local PREV=$2
   local version
   if [ "$3" != "" ]; then
-    version=-$3
+    version=-"$3"
   fi
 (
 cat << EOF
@@ -96,7 +96,7 @@ cat << EOF
 $i:  $PREV
 	@\$(call echo_message, Building)
 ${NO_PROGRESS}	@export BASHBIN=\$(SHELL) && \$(SHELL) progress_bar.sh \$@ \$\$PPID &
-	@echo "\$(nl_)\`date\`\$(nl_)" >logs/\$@$version
+	@echo "\$(nl_)\`date\`\$(nl_)" >logs/\$@"$version"
 	@ : > envars
 EOF
 ) >> $MKFILE.tmp
@@ -127,7 +127,7 @@ EOF
 
 (
 cat << EOF
-	@\$(PRT_DU) >>logs/\$@$version
+	@\$(PRT_DU) >>logs/\$@"$version"
 	@\$(call unpack,$FILE)
 	@\$(call get_pkg_root_LUSER)
 EOF
@@ -154,7 +154,7 @@ EOF
 
 (
 cat << EOF
-	@\$(PRT_DU_CR) >>logs/\$@$version
+	@\$(PRT_DU_CR) >>logs/\$@"$version"
 	@\$(call unpack2,$FILE)
 	@\$(call get_pkg_root2)
 EOF
@@ -171,13 +171,13 @@ LUSER_wrt_test_log() {             # Initialize testsuite log file
 #----------------------------------#
   local version
   if [ "$2" != "" ]; then
-    version=-$2
+    version=-"$2"
   fi
-  local TESTLOGFILE=$1$version
+  local TESTLOGFILE="$1$version"
 (
 cat  << EOF
 	@echo "export  TEST_LOG=\$(TESTLOGDIR)/$TESTLOGFILE" >> envars && \\
-	echo "\$(nl_)\`date\`\$(nl_)" >\$(TESTLOGDIR)/$TESTLOGFILE
+	echo "\$(nl_)\`date\`\$(nl_)" >\$(TESTLOGDIR)/"$TESTLOGFILE"
 EOF
 ) >> $MKFILE.tmp
 }
@@ -187,13 +187,13 @@ CHROOT_wrt_test_log() {            #
 #----------------------------------#
   local version
   if [ "$2" != "" ]; then
-    version=-$2
+    version=-"$2"
   fi
-  local TESTLOGFILE=$1$version
+  local TESTLOGFILE="$1$version"
 (
 cat  << EOF
 	@echo "export TEST_LOG=\$(crTESTLOGDIR)/$TESTLOGFILE" >> envars && \\
-	echo "\$(nl_)\`date\`\$(nl_)" >\$(crTESTLOGDIR)/$TESTLOGFILE
+	echo "\$(nl_)\`date\`\$(nl_)" >\$(crTESTLOGDIR)/"$TESTLOGFILE"
 EOF
 ) >> $MKFILE.tmp
 }
@@ -209,14 +209,14 @@ wrt_RunAsRoot() {                  # Some scripts must be run as root..
   local MOUNT_ENV
   local version
   if [ "$2" != "" ]; then
-    version=-$2
+    version=-"$2"
   fi
   local file=$1
 
 (
 cat << EOF
 	@export LFS=\$(MOUNT_PT) && \\
-	$COMMANDS/`dirname $file`/\$@ >>logs/\$@$version 2>&1
+	$COMMANDS/`dirname $file`/\$@ >>logs/\$@"$version" 2>&1
 EOF
 ) >> $MKFILE.tmp
 }
@@ -227,13 +227,13 @@ LUSER_wrt_RunAsUser() {            # Calculate time with perl, footer to log fil
   local file=$1
   local version
   if [ "$2" != "" ]; then
-    version=-$2
+    version=-"$2"
   fi
 
 (
 cat << EOF
 	@source ~/.bashrc && \\
-	\$(CMDSDIR)/`dirname $file`/\$@ >> \$(LOGDIR)/\$@$version 2>&1
+	\$(CMDSDIR)/`dirname $file`/\$@ >> \$(LOGDIR)/\$@"$version" 2>&1
 EOF
 ) >> $MKFILE.tmp
 }
@@ -244,12 +244,12 @@ CHROOT_wrt_RunAsRoot() {           #
   local file=$1
   local version
   if [ "$2" != "" ]; then
-    version=-$2
+    version=-"$2"
   fi
 (
 cat << EOF
 	@source envars && \\
-	\$(crCMDSDIR)/`dirname $file`/\$@ >>\$(crLOGDIR)/\$@$version 2>&1
+	\$(crCMDSDIR)/`dirname $file`/\$@ >>\$(crLOGDIR)/\$@"$version" 2>&1
 EOF
 ) >> $MKFILE.tmp
 
