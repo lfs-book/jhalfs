@@ -393,7 +393,7 @@ if [[ "$REBUILD_MAKEFILE" = "n" ]] ; then
     [[ ${PIPESTATUS[0]} != 0 ]] && exit 1
   fi
 
-fi
+fi # $REBUILD_MAKEFILE = n
 
 # shellcheck disable=SC2034
 if [[ "$REBUILD_MAKEFILE" = "y" ]] ; then
@@ -405,7 +405,7 @@ if [[ "$REBUILD_MAKEFILE" = "y" ]] ; then
   fi
 # When regenerating the Makefile, we need to know also the
 # canonical book version
-VERSION=$(grep 'echo.*lfs-release' "$JHALFSDIR/prbook.xml" | sed 's/.*echo[ ]*\([^ ]*\).*/\1/')
+  extract_version
 fi
 
 build_Makefile
@@ -413,9 +413,10 @@ build_Makefile
 echo "${SD_BORDER}${nl_}"
 
 # Check for build prerequisites.
-  echo
-  cd "$CWD"
-  check_prerequisites
-  echo "${SD_BORDER}${nl_}"
+echo
+cd "$CWD"
+check_prerequisites
+echo "${SD_BORDER}${nl_}"
+
 # All is well, run the build (if requested)
 run_make

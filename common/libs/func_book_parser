@@ -137,10 +137,8 @@ extract_commands() {         #
   create_chroot_scripts
   create_kernfs_scripts
 
-  # we create the VERSION variable here. Should maybe go into its own
-  # function. But at this point we can use the profiled xml to get
-  # version from lfs-release in the lfs case.
-  VERSION=$(grep 'echo.*lfs-release' prbook.xml | sed 's/.*echo[ ]*\([^ ]*\).*/\1/')
+  # we create the VERSION variable here.
+  extract_version
 
   # Done. Moving on...
   get_sources
@@ -182,4 +180,15 @@ create_kernfs_scripts() {    #
 
   echo "done"
 
+}
+
+#---------------------------#
+extract_version() {         #
+#---------------------------#
+
+  declare -g VERSION="$(grep echo.*lfs-release prbook.xml | sed s/.*echo//)"
+  case "$VERSION" in
+      *\"*) VERSION="$(echo $VERSION | sed 's/[^"]*"\([^"]*\).*/\1/')" ;;
+         *) VERSION="$(echo $VERSION | sed 's/[ ]*\([^ ]*\).*/\1/')" ;;
+  esac
 }
