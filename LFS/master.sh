@@ -327,27 +327,7 @@ fi
 (
     cat << EOF
 	@sudo make do_housekeeping
-	@echo $VERSION > lfs-release && \\
-	sudo mv lfs-release \$(MOUNT_PT)/etc && \\
-	sudo chown root:root \$(MOUNT_PT)/etc/lfs-release
-	@/bin/echo -e -n \\
-	DISTRIB_ID=\\"Linux From Scratch\\"\\\\n\\
-	DISTRIB_RELEASE=\\"$VERSION\\"\\\\n\\
-	DISTRIB_CODENAME=\\"$(whoami)-jhalfs\\"\\\\n\\
-	DISTRIB_DESCRIPTION=\\"Linux From Scratch\\"\\\\n\\
-	> lsb-release && \\
-	sudo mv lsb-release \$(MOUNT_PT)/etc && \\
-	sudo chown root:root \$(MOUNT_PT)/etc/lsb-release
-	@/bin/echo -e -n \\
-	NAME=\\"Linux From Scratch\\"\\\\n\\
-	VERSION=\\"$VERSION\\"\\\\n\\
-	ID=lfs\\\\n\\
-	PRETTY_NAME=\\"Linux From Scratch $VERSION\\"\\\\n\\
-	VERSION_CODENAME=\\"$(whoami)-jhalfs\\"\\\\n\\
-	> os-release && \\
-	sudo mv os-release \$(MOUNT_PT)/etc && \\
-	sudo chown root:root \$(MOUNT_PT)/etc/os-release
-	@\$(call echo_finished,$VERSION)
+	@\$(call echo_finished,"$VERSION")
 
 ck_UID:
 	@if [ \`id -u\` = "0" ]; then \\

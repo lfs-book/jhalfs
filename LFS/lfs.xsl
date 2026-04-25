@@ -121,7 +121,8 @@ otherwise it is in /bin.-->
                                 @id='chapter-building-system' or
                                 @id='chapter-config' or
                                 @id='chapter-bootscripts' or
-                                @id='chapter-bootable']"/>
+                                @id='chapter-bootable' or
+                                @id='chapter-finalizing']"/>
   </xsl:template>
 
   <xsl:template match="chapter">
@@ -171,7 +172,8 @@ otherwise it is in /bin.-->
         <xsl:text>set -e&#xA;</xsl:text>
       </xsl:if>
       <xsl:text>&#xA;</xsl:text>
-      <xsl:if test="ancestor::chapter/@id != 'chapter-final-preps'">
+      <xsl:if test="ancestor::chapter/@id != 'chapter-final-preps' and
+                    ancestor::chapter/@id != 'chapter-finalizing'">
         <xsl:call-template name="start-script">
           <xsl:with-param name="order" select="$order"/>
         </xsl:call-template>
@@ -193,7 +195,8 @@ otherwise it is in /bin.-->
                                                         ]//userinput"
            mode="pkgmngt"/>
       </xsl:if>
-      <xsl:if test="ancestor::chapter/@id != 'chapter-final-preps'">
+      <xsl:if test="ancestor::chapter/@id != 'chapter-final-preps' and
+                    ancestor::chapter/@id != 'chapter-finalizing'">
         <xsl:text>echo -e "\n\nTotalseconds: $SECONDS\n"&#xA;</xsl:text>
         <xsl:call-template name="end-script">
           <xsl:with-param name="chap-num" select="$chap-num"/>
@@ -665,6 +668,10 @@ unset OLD_PKGDIR
       </xsl:when>
       <xsl:when test="contains(string(.),'$(nproc)')">
         <xsl:value-of select="$jobs"/>
+      </xsl:when>
+      <xsl:when test="contains(string(.),'your name here')">
+        <xsl:text>jhalfs-</xsl:text>
+        <xsl:value-of select="$hostname"/>
       </xsl:when>
       <xsl:otherwise>
         <xsl:text>**EDITME</xsl:text>
