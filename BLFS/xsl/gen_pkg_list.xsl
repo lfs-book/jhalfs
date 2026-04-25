@@ -72,11 +72,19 @@
   </xsl:template>
 
   <xsl:template match="userinput">
+    <xsl:variable name="quote">"</xsl:variable>
 <!-- Only used in lFS chapter 9, to retrieve book version -->
     <package>
       <name>LFS-Release</name>
       <xsl:element name="version">
-        <xsl:copy-of select="substring-after(substring-before(string(),' &gt;'),'echo ')"/>
+        <xsl:choose>
+          <xsl:when test="contains(string(),string($quote))">
+            <xsl:copy-of select="substring-before(substring-after(string(),string($quote)),string($quote))"/>
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:copy-of select="substring-after(substring-before(string(),' &gt;'),'echo ')"/>
+          </xsl:otherwise>
+        </xsl:choose>
       </xsl:element>
       <xsl:if
           test="document($installed-packages)//package[name='LFS-Release']">
