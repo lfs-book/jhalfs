@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE stylesheet [
 <!ENTITY detect-config
-        "contains(string($current-instr),'useradd') or
+        "$current-instr/userinput[@remap='pre'] or
+         contains(string($current-instr),'useradd') or
          contains(string($current-instr),'groupadd') or
          contains(string($current-instr),'usermod') or
          contains(string($current-instr),'icon-cache') or
@@ -10,7 +11,6 @@
          contains(string($current-instr),'query-loaders') or
          contains(string($current-instr),'pam.d') or
          contains(string($current-instr),'/opt/rustc') or
-         contains(string($current-instr),'libQt5WebEngine') or
          contains(string($current-instr),'desktop-file-edit') or
          contains(string($current-instr),'.old') or
          contains(string($current-instr),'tracker-miner') or
@@ -21,6 +21,7 @@
          contains(string($current-instr),'rst*.py') or
          contains(string($current-instr),'gnome-control-center') or
          contains(string($current-instr),'runlevel.service') or
+         contains(string($current-instr),'libLayerShell') or
          contains(string($current-instr),'Gimp')">
 ]>
 
