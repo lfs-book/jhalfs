@@ -250,6 +250,7 @@ echo Making XML book
 xsltproc --stringparam list    "$LIST"        \
          --stringparam MTA     "$MAIL_SERVER" \
          --stringparam lfsbook "$LFS_FULL"    \
+	 --maxdepth 5000
          -o ${BookXml} \
          ${MakeBook} \
          $BLFS_FULL

@@ -107,10 +107,14 @@ done</xsl:variable>
     <xsl:variable name="order">
       <xsl:choose>
         <xsl:when test="string-length($position) = 1">
-          <xsl:text>00</xsl:text>
+          <xsl:text>000</xsl:text>
           <xsl:value-of select="$position"/>
         </xsl:when>
         <xsl:when test="string-length($position) = 2">
+          <xsl:text>00</xsl:text>
+          <xsl:value-of select="$position"/>
+        </xsl:when>
+        <xsl:when test="string-length($position) = 3">
           <xsl:text>0</xsl:text>
           <xsl:value-of select="$position"/>
         </xsl:when>
