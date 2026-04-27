@@ -93,7 +93,7 @@
       </xsl:when>
 <!-- At several places, the number of jobs is given as "N" in a replaceable
      tag. We either detect "N" alone or &lt;N&gt; Also, we have now a few
-     instances of $(nproc) in a replaceable tag. Replace with with the
+     instances of $(nproc) in a replaceable tag. Replace with the
      number of jobs chosen by the user. -->
       <xsl:when test="contains(string(),'&lt;N&gt;') or
                       string()='N' or
@@ -112,7 +112,7 @@
       <xsl:when test="contains(string(),'user_name') and $sudo='y'">
         <xsl:text>$USER ${USER}@mail.bogus</xsl:text>
       </xsl:when>
-<!-- Use the config for Gtk+3 as is -->
+<!-- Use the config for Gtk+3 and gtk4 as is -->
       <xsl:when test="ancestor::sect1[@id='gtk3' or @id='gtk4']">
         <xsl:copy-of select="string()"/>
       </xsl:when>
