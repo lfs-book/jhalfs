@@ -334,8 +334,12 @@ echo Size after install: $(sudo du -skx --exclude home $BUILD_DIR) >> $INFOLOG
             <xsl:with-param name="want-stats" select="$want-stats"/>
           </xsl:call-template>
         </xsl:if>
-        <!-- we have a special case for the "as_root" function -->
+        <!-- we have a special case for the "as_root" function.
+             We also want to remove "bash -e" and "exit" intructions (case
+             of alsa-tools) -->
         <xsl:choose>
+          <xsl:when test="string($current-instr)='bash -e'"/>
+          <xsl:when test="string($current-instr)='exit'"/>
           <xsl:when test="contains(string($current-instr),'as_root()')">
             <xsl:call-template name="custom_as_root"/>
           </xsl:when>
