@@ -172,6 +172,17 @@ PASS_EOF</xsl:text>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
+      <!-- case of tripwire -->
+      <xsl:when test="contains(string(),'site-password')">
+        <xsl:text>spw</xsl:text>
+      </xsl:when>
+      <xsl:when test="contains(string(),'local-password')">
+        <xsl:text>lpw</xsl:text>
+      </xsl:when>
+      <!-- case of bind (resolv.conf) -->
+      <xsl:when test="contains(string(),'yourdomain')">
+        <xsl:copy-of select="$domainname"/>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:text>**EDITME</xsl:text>
         <xsl:apply-templates/>
