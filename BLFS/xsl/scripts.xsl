@@ -1080,6 +1080,26 @@ pip3 install -I --no-deps --root $PKG_DEST</xsl:text>
       </xsl:when>
       <xsl:otherwise>
         <xsl:copy-of select="$out-string"/>
+        <!-- there are a few cases where we want to add some time after
+             our instruction, because it starts a program in background. Let's
+             do it here. -->
+        <xsl:if test="contains($out-string,'/data/logfile') or
+                      contains($out-string,'mariadbd-safe') or
+                      contains($out-string,'start named')">
+          <xsl:text>
+sleep 5</xsl:text>
+        </xsl:if>
+        <!-- we need to add a password for mariadb, otherwise the script
+             stops waiting for it. We also need to provide it to stop
+             the database. -->
+        <xsl:if test="contains($out-string,'root password')">
+          <xsl:text> mdbpw</xsl:text>
+        </xsl:if>
+        <xsl:if test="contains($out-string,'-p shutdown')">
+          <xsl:text> &lt;&lt; PW_EOF
+mdbpw
+PW_EOF</xsl:text>
+        </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
