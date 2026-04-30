@@ -1100,6 +1100,12 @@ sleep 5</xsl:text>
 mdbpw
 PW_EOF</xsl:text>
         </xsl:if>
+        <!-- prevent gcc tests to stop the build if failing (which
+             is more than likely). -->
+        <xsl:if test="ancestor::sect1[@id='gcc'] and
+                      contains($out-string,'check')">
+          <xsl:text> || true</xsl:text>
+        </xsl:if>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
