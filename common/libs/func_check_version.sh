@@ -124,6 +124,12 @@ check_prerequisites() {      #
   if [ -n "$MIN_Bison_VER" ]; then
     check_version "$MIN_Bison_VER"     "$(bison --version | head -n1 | cut -d" " -f4)"      "BISON"
   fi
+  if [ -n "$MIN_GNU_Coreutils_VER" ] && chown --version | grep -q GNU; then
+    check_version "$MIN_GNU_Coreutils_VER" "$(chown --version | head -n1 | cut -d" " -f4)"  "GNU COREUTILS"
+  fi
+  if [ -n "$MIN_Uutils_Coreutils_VER" ] && chown --version | grep -q uutils; then
+    check_version "$MIN_Uutils_Coreutils_VER" "$(chown --version | head -n1 | cut -d" " -f4)" "UUTILS COREUTILS"
+  fi
   if [ -n "$MIN_Coreutils_VER" ]; then
     check_version "$MIN_Coreutils_VER" "$(chown --version | head -n1 | cut -d" " -f4)"      "COREUTILS"
   fi

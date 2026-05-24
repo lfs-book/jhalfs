@@ -65,6 +65,12 @@ or ' @' -->
       <xsl:when test="contains(string(),'XZ')">
         <xsl:text>Xz</xsl:text>
       </xsl:when>
+      <xsl:when test="contains(string(),'GNU Coreutils')">
+        <xsl:text>GNU_Coreutils</xsl:text>
+      </xsl:when>
+      <xsl:when test="contains(string(),'utils Coreutils')">
+        <xsl:text>Uutils_Coreutils</xsl:text>
+      </xsl:when>
       <xsl:otherwise>
 <!-- We assume that there are no dash nor space in other names -->
         <xsl:value-of select="substring(string(),1,number($begin-ver)-1)"/>
