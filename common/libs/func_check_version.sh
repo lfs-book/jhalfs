@@ -188,8 +188,13 @@ inline_doc
   # Check for minimum sudo version
   SUDO_LOC="$(whereis -b sudo | cut -d" " -f2)"
   if [ -x $SUDO_LOC ]; then
-    sudoVer="$(sudo -V | head -n1 | cut -d" " -f3)"
-    check_version "1.7.0"  "${sudoVer}"      "SUDO"
+    if sudo -V | grep -q sudo-rs; then
+      sudoVer="$(sudo -V | head -n1 | cut -d" " -f2)"
+      check_version "0.2.13"  "${sudoVer}"      "SUDO-RS"
+    else
+      sudoVer="$(sudo -V | head -n1 | cut -d" " -f3)"
+      check_version "1.7.0"  "${sudoVer}"       "SUDO"
+    fi
   else
     echo "${nl_}\"${RED}sudo${OFF}\" ${BOLD}must be installed on your system for jhalfs to run"
     exit 1
