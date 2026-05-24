@@ -364,7 +364,7 @@
 
         For commands necessitating root privileges, the generated scripts wrap
      them with the construct:
-       sudo -E sh -e << ROOT_EOF
+       sudo -E -H sh -e << ROOT_EOF
          <commands to be executed as root with `$', ``', and `\' escaped>
        ROOT_EOF
      The "-e" switch to sh ensures the command block exits with error if an
@@ -374,7 +374,10 @@
      the user attributes (this is implicit if the command the user is allowed
      to run is `ALL'). If you think it is a security issue, you may forbid
      this flag in /etc/sudoers, but then, you have to un-escape `$' for
-     variables coming from the environment in the instructions. Although this
+     variables coming from the environment in the instructions. The "-H" switch
+     prevents HOME to be passed in the environment, and sets it to root's
+     home. This prevents creating some files owned by root in the user's
+     home. Although this
      construct is rather strong, it can fail in some corner cases, so
      carefully review those instructions.
 
