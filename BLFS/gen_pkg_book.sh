@@ -308,8 +308,8 @@ if [ -n "$DEP_CHECK" ]; then
       printf "         shoud be selected. Not generating check code.\n"
       exit
    fi
-   if ! porg -h >/dev/null 2>&1; then
-      printf "\nWARNING: program porg not found.\n"
+   if ! porg -h >/dev/null 2>&1 || ! porgball -h >/dev/null 2>&1; then
+      printf "\nWARNING: porg system not found.\n"
       printf "         Not generating check code.\n"
       exit
    fi
@@ -317,32 +317,56 @@ if [ -n "$DEP_CHECK" ]; then
    LIST_LFS=" $(xsltproc $ListLFS $LFS_FULL) "
    LIST_NEEDED=" $(echo ${FULL_LIST,,}) "
    LIST_INSTALLED="$(porg -a | sed 's/-[[:digit:]].*//')"
-   LIST_UNNEEDED=
+   cntr=0
    for p in $LIST_INSTALLED; do
       case " $LIST_LFS " in *" $p "*)  continue ;; esac
       case " $LIST_NEEDED " in *" $p "*)  continue ;; esac
-      LIST_UNNEEDED="$LIST_UNNEEDED $p"
+      LIST_UNNEEDED[((cntr++))]="$p"
    done
    cat >head.tmp <<EOF
 #!/bin/bash
 set -e
 
-# Remove all unneeded packages
-VERSIONED_LIST=
-for p in $LIST_UNNEEDED; do
-   VERSIONED_LIST="\$VERSIONED_LIST \$(porg \$p)"
-   sudo porg -rb \$p
+# List all unneeded packages with versions in a file
+VERSION_FILE="./versions-${TARGET[0]}"
+: > \$VERSION_FILE
+EOF
+   for (( i=0; i<cntr; i++ )); do
+      echo "porg ${LIST_UNNEEDED[i]} >> \$VERSION_FILE" >> head.tmp
+   done
+   cat >>head.tmp <<EOF
+
+# Keep track of removed packages in a file:
+REMOVED_FILE="./removed-${TARGET[0]}"
+: > \$REMOVED_FILE
+
+# Function to remove packages
+remove_pack () {
+cat \$VERSION_FILE | while read p; do
+   if sudo porg -rb \${p}; then
+      echo \$p removed
+      echo \$p >> \$REMOVED_FILE
+   fi
 done
+}
+
+# Keep track of current dir since the script will change dir
+MY_DIR=$(pwd)
 
 # Function to restore packages
 restore_pack () {
-for p in \$VERSIONED_LIST; do
-   sudo porgball -e -l /var/lib/packages/\${p}.porg.tar.gz
+cd \$MY_DIR
+cat \$REMOVED_FILE | while read p; do
+   if sudo porgball -e -l /var/lib/packages/\${p}.porg.tar.gz; then
+      echo \$p restored
+      sed -i /\${p}/d \$REMOVED_FILE
+   fi
 done
 }
 
 trap restore_pack ERR
 
+remove_pack
 EOF
    cat >tail.tmp <<EOF
 restore_pack
