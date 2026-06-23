@@ -66,7 +66,7 @@ case $1 in
   cacerts*)
     VERSION=0.1
     ;;
-  btrfs*|node*|pnmixer*|docbook-v*|libslirp*)
+  btrfs*|node*|pnmixer*|docbook-v*|libslirp*|libliftoff*)
     VERSION=$(echo $1 | sed 's/^.*v//')
     ;;
   x264*) # can contain vd.d or just d.d, and now our package is not versioned!
