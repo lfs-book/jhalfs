@@ -13,8 +13,10 @@
 
   <xsl:template match="/">
     <xsl:apply-templates
-      select="//varlistentry[@revision=$revision
-                             or not(@revision)]/listitem/para/ulink"/>
+    select="//varlistentry[@revision=$revision or not(@revision)]/
+              listitem/
+              para[contains(string(),'Download')]/
+              ulink"/>
     <xsl:if test="$pkgmngt='y'">
       <xsl:apply-templates
         select="document('packageManager.xml')//ulink"/>
@@ -22,13 +24,9 @@
   </xsl:template>
 
   <xsl:template match="ulink">
-      <!-- If some package doesn't have the predefined strings in their
-      name, the next test must be fixed to match it also. Skip possible
-      duplicated URLs due that may be splitted for PDF output -->
-    <xsl:if test="(contains(@url, '.bz2') or contains(@url, '.tar.gz') or
-                  contains(@url, '.tgz') or contains(@url, '.patch') or
-                  contains(@url, '.xz') or contains(@url, '.lzma')) and
-                  not(ancestor-or-self::*/@condition = 'pdf')">
+    <!-- Skip possible duplicated URLs due that may be splitted for
+         PDF output -->
+    <xsl:if test="not(ancestor-or-self::*/@condition = 'pdf')">
       <!-- Extract the package name -->
       <xsl:variable name="package">
         <xsl:call-template name="package.name">
