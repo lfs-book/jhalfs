@@ -1188,13 +1188,13 @@ case $PACKAGE in
      JH_UNPACKDIR=`head -n1 unpacked | cut  -d" " -f2 | sed 's@^\./@@;s@/.*@@'`
      ;;
   *.zip)
-     bsdtar --list -f $SRC_DIR/$PACKAGE &gt; unpacked
+     python3 -m zipfile -l $SRC_DIR/$PACKAGE &gt; unpacked
      JH_UNPACKDIR="$(sed 's@/.*@@' unpacked | uniq )"
      if test $(wc -w &lt;&lt;&lt; $JH_UNPACKDIR) -eq 1; then
-       unzip $SRC_DIR/$PACKAGE
+       python3 -m zipfile -e $SRC_DIR/$PACKAGE .
      else
        JH_UNPACKDIR=${PACKAGE%.zip}
-       unzip -d $JH_UNPACKDIR $SRC_DIR/$PACKAGE
+       python3 -m zipfile -e $SRC_DIR/$PACKAGE $JH_UNPACKDIR
      fi
      ;;
   *)
