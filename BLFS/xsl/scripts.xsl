@@ -1189,7 +1189,7 @@ case $PACKAGE in
      ;;
   *.zip)
      python3 -m zipfile -l $SRC_DIR/$PACKAGE &gt; unpacked
-     JH_UNPACKDIR="$(sed 's@/.*@@' unpacked | uniq )"
+     JH_UNPACKDIR="$(sed -n 's@/.*@@p' unpacked | uniq )"
      if test $(wc -w &lt;&lt;&lt; $JH_UNPACKDIR) -eq 1; then
        python3 -m zipfile -e $SRC_DIR/$PACKAGE .
      else
