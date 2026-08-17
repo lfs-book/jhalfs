@@ -1188,8 +1188,8 @@ case $PACKAGE in
      JH_UNPACKDIR=`head -n1 unpacked | cut  -d" " -f2 | sed 's@^\./@@;s@/.*@@'`
      ;;
   *.zip)
-     python3 -m zipfile -l $SRC_DIR/$PACKAGE &gt; unpacked
-     JH_UNPACKDIR="$(sed -n 's@/.*@@p' unpacked | uniq )"
+     python3 -m zipfile -l $SRC_DIR/$PACKAGE | sed 1d &gt; unpacked
+     JH_UNPACKDIR="$(sed 's@/.*@@' unpacked | uniq )"
      if test $(wc -w &lt;&lt;&lt; $JH_UNPACKDIR) -eq 1; then
        python3 -m zipfile -e $SRC_DIR/$PACKAGE .
      else
