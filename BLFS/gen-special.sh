@@ -65,7 +65,7 @@ for nv_id in $NV_LIST; do
 # because the DTD needs a version tag.
   DUM_VER=1.0.0
   if [ $nv_id = kf6-intro ]; then
-    DUM_VER=$(grep kf6-version $BLFS_DIR/packages.ent | \
+    DUM_VER=$(grep "[^&]kf6-version" $BLFS_DIR/packages.ent | \
               sed 's/[^"]*"\([^"]*\).*/\1/')
   fi
   if [ $nv_id = tex-path ]; then
